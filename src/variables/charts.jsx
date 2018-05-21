@@ -372,18 +372,18 @@ const dashboard24HoursPerformanceChart = {
     gradientFill.addColorStop(1, hexToRGB('#2CA8FF', 0.6));
     return {
       labels: [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December'
+        '00:00',
+        '02:00',
+        '04:00',
+        '06:00',
+        '08:00',
+        '10:00',
+        '12:00',
+        '14:00',
+        '16:00',
+        '18:00',
+        '20:00',
+        '22:00'
       ],
       datasets: [
         {
