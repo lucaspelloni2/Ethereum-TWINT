@@ -13,8 +13,8 @@ class Footer extends React.Component{
                     <nav>
                         <ul>
                             <li>
-                                <a href="https://www.creative-tim.com">
-                                    Creative Tim
+                                <a href="">
+                                    Crypto Portfolio
                                 </a>
                             </li>
                             <li>
@@ -30,7 +30,7 @@ class Footer extends React.Component{
                         </ul>
                     </nav>
                     <div className="copyright">
-                        &copy; {1900 + (new Date()).getYear()}, Designed by <a href="https://www.invisionapp.com" target="_blank" rel="noopener noreferrer">Invision</a>. Coded by <a href="https://www.creative-tim.com" target="_blank" rel="noopener noreferrer">Creative Tim</a>.
+                       Trying to improve the portfolio management for Cryptocurrencies>.
                     </div>
                 </Container>
             </footer>
