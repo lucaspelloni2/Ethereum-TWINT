@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-    Card, CardHeader, CardBody, Row, Col
+    Card, CardHeader, CardBody, Row, Col, Button
 } from 'reactstrap';
 
 import { PanelHeader, FormInputs, CardAuthor, CardSocials } from 'components';
 
-import userBackground from 'assets/img/bg5.jpg';
-import userAvatar from 'assets/img/mike.jpg';
+import userBackground from 'assets/img/bg8.jpg';
+import userAvatar from 'assets/img/lucas.png';
 
 class User extends React.Component{
     render(){
@@ -29,22 +29,21 @@ class User extends React.Component{
                                                     label : "Company (disabled)",
                                                     inputProps : {
                                                         type : "text",
-                                                        disabled: true,
-                                                        defaultValue: "Creative Code Inc."
+                                                        defaultValue: "ScienceMatters AG"
                                                     }
                                                 },
                                                 {
                                                     label : "Username",
                                                     inputProps : {
                                                         type : "text",
-                                                        defaultValue: "michael23"
+                                                        defaultValue: "lucaspelloni"
                                                     }
                                                 },
                                                 {
                                                     label : "Email address",
                                                     inputProps : {
                                                         type : "email",
-                                                        placeholder: "Email"
+                                                        placeholder: "Email",
                                                     }
                                                 }
                                             ]}
@@ -57,7 +56,7 @@ class User extends React.Component{
                                                     inputProps : {
                                                         type : "text",
                                                         placeholder: "First Name",
-                                                        defaultValue: "Mike"
+                                                        defaultValue: "Lucas"
                                                     }
                                                 },
                                                 {
@@ -65,7 +64,7 @@ class User extends React.Component{
                                                     inputProps : {
                                                         type : "text",
                                                         placeholder: "Last Name",
-                                                        defaultValue: "Andrew"
+                                                        defaultValue: "Pelloni"
                                                     }
                                                 }
                                             ]}
@@ -78,7 +77,7 @@ class User extends React.Component{
                                                     inputProps : {
                                                         type : "text",
                                                         placeholder: "Home Address",
-                                                        defaultValue: "Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                                                        defaultValue: "Naglerwiesenstrasse 88 "
                                                     }
                                                 }
                                             ]}
@@ -90,7 +89,7 @@ class User extends React.Component{
                                                     label : "City",
                                                     inputProps : {
                                                         type : "text",
-                                                        defaultValue: "Bucharest",
+                                                        defaultValue: "Zürich",
                                                         placeholder: "City"
                                                     }
                                                 },
@@ -98,7 +97,7 @@ class User extends React.Component{
                                                     label : "Country",
                                                     inputProps : {
                                                         type : "text",
-                                                        defaultValue: "Romania",
+                                                        defaultValue: "Switzerland",
                                                         placeholder: "Country"
                                                     }
                                                 },
@@ -106,29 +105,18 @@ class User extends React.Component{
                                                     label : "Postal Code",
                                                     inputProps : {
                                                         type : "number",
+                                                        defaultValue: "8049",
                                                         placeholder: "ZIP Code"
                                                     }
                                                 }
                                             ]}
                                         />
-                                        <FormInputs
-                                            ncols = {["col-md-12"]}
-                                            proprieties = {[
-                                                {
-                                                    label : "About Me",
-                                                    inputProps : {
-                                                        type : "textarea",
-                                                        rows: "4",
-                                                        cols: "80",
-                                                        defaultValue: "Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.",
-                                                        placeholder: "Here can be your description"
-                                                    }
-                                                }
-                                            ]}
-                                        />
                                     </form>
+                                    <Button>Save your profile</Button>
                                 </CardBody>
+
                             </Card>
+
                         </Col>
                         <Col md={4}  xs={12}>
                             <Card className="card-user">
@@ -139,13 +127,12 @@ class User extends React.Component{
                                     <CardAuthor
                                         avatar={userAvatar}
                                         avatarAlt="..."
-                                        title="Mike Andrew"
-                                        description="michael23"
+                                        title="Lucas Pelloni"
+                                        description="lucaspelloni"
                                     />
                                     <p className="description text-center">
-                                        "Lamborghini Mercy <br/>
-                                        Your chick she so thirsty <br/>
-                                        I'm in that two seat Lambo"
+                                        Blockchain passionate <br/>
+                                        Full Stack Engineer
                                     </p>
                                 </CardBody>
                                 <hr />
