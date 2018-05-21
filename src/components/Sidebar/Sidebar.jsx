@@ -36,8 +36,8 @@ class Sidebar extends React.Component{
                             <img src={logo} alt="react-logo" />
                         </div>
                 	</a>
-                	<a href="https://www.creative-tim.com" className="simple-text logo-normal">
-                		Creative Tim
+                	<a href="" className="simple-text logo-normal">
+                		Crypto Portfolio
                 	</a>
                 </div>
                 <div className="sidebar-wrapper" ref="sidebar">
@@ -49,7 +49,7 @@ class Sidebar extends React.Component{
                                 return (
                                     <li className={this.activeRoute(prop.path) + (prop.pro ? " active active-pro":"")} key={key}>
                                         <NavLink to={prop.path} className="nav-link" activeClassName="active">
-                                            <i className={"now-ui-icons "+prop.icon}></i>
+                                            <i className={"now-ui-icons "+prop.icon}/>
                                             <p>{prop.name}</p>
                                         </NavLink>
                                     </li>

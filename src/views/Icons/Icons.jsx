@@ -45,4 +45,4 @@ class Icons extends React.Component{
     }
 }
 
-export default Icons;
+export default  Icons;

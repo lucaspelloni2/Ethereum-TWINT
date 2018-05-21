@@ -34,8 +34,8 @@ class Dashboard extends React.Component{
                         <Col xs={12} md={4}>
                             <Card className="card-chart">
                                 <CardHeader>
-                                    <CardCategory>Global Sales</CardCategory>
-                                    <CardTitle>Shipped Products</CardTitle>
+                                    <CardCategory>Current Month</CardCategory>
+                                    <CardTitle>Performance MTD (May)</CardTitle>
                                     <UncontrolledDropdown>
                                         <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
                                             <i className="now-ui-icons loader_gear"></i>
@@ -65,8 +65,8 @@ class Dashboard extends React.Component{
                         <Col xs={12} md={4}>
                             <Card className="card-chart">
                                 <CardHeader>
-                                    <CardCategory>2018 Sales</CardCategory>
-                                    <CardTitle>All products</CardTitle>
+                                    <CardCategory>Current Year </CardCategory>
+                                    <CardTitle>Performance YTD (Jan-May)</CardTitle>
                                     <UncontrolledDropdown>
                                         <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
                                             <i className="now-ui-icons loader_gear"></i>
