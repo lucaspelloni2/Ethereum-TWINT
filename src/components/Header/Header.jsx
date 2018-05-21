@@ -116,7 +116,7 @@ class Header extends React.Component{
                     <Collapse isOpen={this.state.isOpen} navbar className="justify-content-end">
                         <form>
                             <InputGroup className="no-border">
-                                <Input placeholder="Search..." />
+                                <Input placeholder="Search for cryptos..." />
                                 <InputGroupAddon><i className="now-ui-icons ui-1_zoom-bold"></i></InputGroupAddon>
                             </InputGroup>
                         </form>

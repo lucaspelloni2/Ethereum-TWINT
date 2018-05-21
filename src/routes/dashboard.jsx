@@ -8,9 +8,9 @@ import Upgrade from 'views/Upgrade/Upgrade.jsx';
 import UserPage from 'views/UserPage/UserPage.jsx';
 
 var dashRoutes = [
-    { path: "/dashboard", name: "Dashboard", icon: "design_app", component: Dashboard },
+    { path: "/dashboard", name: "Portfolio Overview", icon: "business_chart-pie-36", component: Dashboard },
     { path: "/icons", name: "Icons", icon: "design_image", component: Icons },
-    { path: "/maps", name: "Maps", icon: "business_money-coins", component: Maps },
+    { path: "/maps", name: "Web3", icon: "business_money-coins", component: Maps },
     { path: "/notifications", name: "Notifications", icon: "ui-1_bell-53", component: Notifications },
     { path: "/user-page", name: "User Profile", icon: "users_single-02", component: UserPage },
     { path: "/extended-tables", name: "Table List", icon: "files_paper", component: TableList },
