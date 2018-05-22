@@ -19,6 +19,7 @@
     "react-notification-alert": "0.0.7",
     "react-router-dom": "4.2.2",
     "react-scripts": "1.0.17",
+    "react-select": "^1.2.1",
     "reactstrap": "5.0.0-alpha.4",
     "web3": "^1.0.0-beta.34"
   },
