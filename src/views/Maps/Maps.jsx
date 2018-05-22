@@ -9,10 +9,11 @@ import {
   Input,
   Label
 } from 'reactstrap';
-
 import {PanelHeader} from 'components';
 import Web3 from 'web3';
 import AddressBook from './AddressBook';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -67,8 +68,8 @@ class FullScreenMap extends React.Component {
     console.log('this address ', this.state.selectedAddress);
   }
 
-  handleAddressChange(e) {
-    this.setState({selectedAddress: e.target.value});
+  handleAddressChange(obj) {
+    this.setState({selectedAddress: obj});
   }
 
   handleAmountChange(e) {
@@ -86,10 +87,18 @@ class FullScreenMap extends React.Component {
                 <CardHeader>Send your money</CardHeader>
                 <CardBody>
                   <Label for={'address'}>Address</Label>
-                  <Input
-                    id="address"
-                    placeholder={'Insert an address'}
+                  <Select
+                    name="form-field-name"
+                    value={
+                      this.state.selectedAddress
+                        ? this.state.selectedAddress
+                        : null
+                    }
                     onChange={this.handleAddressChange.bind(this)}
+                    options={AddressBook.map(obj => ({
+                      label: obj.name,
+                      value: obj
+                    }))}
                   />
                   <Label for={'amount'}>Amount (in ETH)</Label>
                   <Input
@@ -110,9 +119,12 @@ class FullScreenMap extends React.Component {
 
             <Col xs={6}>
               <Card>
-                <CardHeader>Search an address</CardHeader>
+                <CardHeader>
+                  Search an address{' '}
+                  <i className="now-ui-icons business_badge" />
+                </CardHeader>
                 <CardBody>
-                  <Label>Select an address from your book</Label>
+                  <Label>Select an address from your book </Label>
                   <Input type="select" name="select" id="exampleSelect">
                     {AddressBook.map(obj => {
                       return (
@@ -122,6 +134,7 @@ class FullScreenMap extends React.Component {
                       );
                     })}
                   </Input>
+                  <Button>Add a new address</Button>
                 </CardBody>
               </Card>
             </Col>
