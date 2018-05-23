@@ -63,15 +63,15 @@ class FullScreenMap extends React.Component {
   transferMoney() {
     this.state.web3.eth.sendTransaction({
       from: this.state.account.ethAddress,
-      to: this.state.selectedAccount.address,
+      to: this.state.selectedAccount.value.address,
       value: this.state.web3.utils.toWei(this.state.amount, 'ether')
     });
     console.log('this address ', this.state.selectedAccount.address);
     console.log(this.state.account);
   }
 
-  handleAccountChange(obj) {
-    this.setState({selectedAccount: obj});
+  handleAccountChange(e) {
+    this.setState({selectedAccount: e});
     console.log(this.state.selectedAccount);
   }
 
