@@ -7,7 +7,8 @@ import {
   CardBody,
   Button,
   Input,
-  Label
+  Label,
+  Table
 } from 'reactstrap';
 import {PanelHeader} from 'components';
 import Web3 from 'web3';
@@ -82,7 +83,7 @@ class FullScreenMap extends React.Component {
   render() {
     return (
       <div>
-        <PanelHeader size="sm"/>
+        <PanelHeader size="sm" />
         <div className="content">
           <Row>
             <Col xs={6}>
@@ -122,22 +123,35 @@ class FullScreenMap extends React.Component {
 
             <Col xs={6}>
               <Card>
-                <CardHeader>
-                  Search an address{' '}
-                  <i className="now-ui-icons business_badge"/>
-                </CardHeader>
+                <CardHeader>Address Book</CardHeader>
                 <CardBody>
-                  <Label>Select an address from your book </Label>
-                  <Input type="select" name="select" id="exampleSelect">
-                    {AddressBook.map(obj => {
-                      return (
-                        <option id={obj.address} value={obj}>
-                          {obj.name} ({obj.address})
-                        </option>
-                      );
-                    })}
-                  </Input>
-                  <Button>Add a new address</Button>
+                  <Label>
+                    Your Address Book{' '}
+                    <i className="now-ui-icons business_badge" />
+                  </Label>
+                  <div style={{overflow: 'scroll', maxHeight: 220}}>
+                    <Table responsive>
+                      <thead className="text-primary">
+                        <tr>
+                          <th>Name</th>
+                          <th>Address</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {AddressBook.map(account => {
+                          return (
+                            <tr key={account.address}>
+                              {<td>{account.name}</td>}
+                              {<td>{account.address}</td>}
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
+                  <div style={{marginTop: 20}}>
+                    <Button color={'primary'}>Add a new address</Button>
+                  </div>
                 </CardBody>
               </Card>
             </Col>
