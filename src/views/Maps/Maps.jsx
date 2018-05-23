@@ -199,13 +199,6 @@ class FullScreenMap extends React.Component {
                   </Button>
                 </CardBody>
               </Card>
-
-              {this.state.account.ethAddress !== null ? (
-                <Transactions
-                  web3={this.state.web3}
-                  account={this.state.account}
-                />
-              ) : null}
             </Col>
 
             <Col xs={6}>
@@ -261,6 +254,16 @@ class FullScreenMap extends React.Component {
                   </div>
                 </CardBody>
               </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              {this.state.account.ethAddress !== null ? (
+                <Transactions
+                  web3={this.state.web3}
+                  account={this.state.account}
+                />
+              ) : null}
             </Col>
           </Row>
         </div>
