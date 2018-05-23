@@ -7,7 +7,12 @@ import {
   CardBody,
   Button,
   Input,
-  Label
+  Label,
+  Table,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from 'reactstrap';
 import {PanelHeader} from 'components';
 import Web3 from 'web3';
@@ -30,9 +35,20 @@ class FullScreenMap extends React.Component {
       web3: web3,
       addresses: [],
 
+      selectedAccount: null,
       amount: '0.00',
-      selectedAccount: null
+
+      modal: false,
+      addedAccount: {
+        name: null,
+        address: null
+      },
+
+      accounts: AddressBook.getAccounts()
+
     };
+
+    this.toggle = this.toggle.bind(this);
   }
 
   async componentDidMount() {
@@ -96,10 +112,32 @@ class FullScreenMap extends React.Component {
     this.setState({amount: e.target.value});
   }
 
+  toggle() {
+    this.setState({
+      modal: !this.state.modal
+    });
+  }
+
+  handleAddName(e) {
+    let addedAccount = Object.assign({}, this.state.addedAccount);
+    addedAccount.name = e.target.value;
+    this.setState({addedAccount: addedAccount});
+  }
+
+  handleAddAddress(e) {
+    let addedAccount = Object.assign({}, this.state.addedAccount);
+    addedAccount.address = e.target.value;
+    this.setState({addedAccount: addedAccount});
+  }
+
+  fetchAccounts() {
+    this.setState({accounts: AddressBook.getAccounts()});
+  }
+
   render() {
     return (
       <div>
-        <PanelHeader size="sm"/>
+        <PanelHeader size="sm" />
         <div className="content">
           <Row>
             <Col xs={6}>
@@ -121,12 +159,17 @@ class FullScreenMap extends React.Component {
                         : null
                     }
                     onChange={this.handleAccountChange.bind(this)}
-                    options={AddressBook.map(obj => ({
+                    options={this.state.accounts.map(obj => ({
                       label: obj.name,
                       value: obj
                     }))}
                   />
                   <Button
+                    color={'primary'}
+                    disabled={
+                      this.state.amount === '0.00' ||
+                      this.state.selectedAccount === 'default'
+                    }
                     onClick={() => {
                       this.transferMoney();
                     }}
@@ -143,27 +186,103 @@ class FullScreenMap extends React.Component {
 
             <Col xs={6}>
               <Card>
-                <CardHeader>
-                  Search an address{' '}
-                  <i className="now-ui-icons business_badge"/>
-                </CardHeader>
+                <CardHeader>Address Book</CardHeader>
                 <CardBody>
-                  <Label>Select an address from your book </Label>
-                  <Input type="select" name="select" id="exampleSelect">
-                    {AddressBook.map(obj => {
-                      return (
-                        <option id={obj.address} value={obj}>
-                          {obj.name} ({obj.address})
-                        </option>
-                      );
-                    })}
-                  </Input>
-                  <Button>Add a new address</Button>
+                  <Label>
+                    Your Address Book{' '}
+                    <i className="now-ui-icons business_badge" />
+                  </Label>
+                  <div style={{overflow: 'scroll', maxHeight: 220}}>
+                    <Table responsive>
+                      <thead className="text-primary">
+                        <tr>
+                          <th>Name</th>
+                          <th>Address</th>
+                          <th />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {this.state.accounts.map(account => {
+                          return (
+                            <tr key={account.address}>
+                              {<td>{account.name}</td>}
+                              {<td>{account.address}</td>}
+                              {
+                                <td>
+                                  <i
+                                    style={{cursor: 'pointer'}}
+                                    className="now-ui-icons ui-1_simple-remove"
+                                    onClick={() => {
+                                      AddressBook.removeAccount(account);
+                                      this.fetchAccounts();
+                                    }}
+                                  />{' '}
+                                </td>
+                              }
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </Table>
+                  </div>
+                  <div style={{marginTop: 20}}>
+                    <Button
+                      color={'primary'}
+                      onClick={() => {
+                        this.toggle();
+                      }}
+                    >
+                      Add a new address
+                    </Button>
+                  </div>
                 </CardBody>
               </Card>
             </Col>
           </Row>
         </div>
+
+        <Modal
+          isOpen={this.state.modal}
+          toggle={this.toggle}
+          // className={this.props.className}
+        >
+          <ModalHeader toggle={this.toggle}>Add new account</ModalHeader>
+          <ModalBody>
+            <div>
+              <Label for="addName">Name</Label>
+              <Input
+                placeholder="name"
+                id="addName"
+                type="text"
+                onChange={this.handleAddName.bind(this)}
+              />
+            </div>
+            <div>
+              <Label for="addAddress">Address</Label>
+              <Input
+                placeholder="address"
+                id="addAddress"
+                type="text"
+                onChange={this.handleAddAddress.bind(this)}
+              />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={this.toggle}>
+              Cancel
+            </Button>
+            <Button
+              color="primary"
+              onClick={() => {
+                AddressBook.addAccount(this.state.addedAccount);
+                this.fetchAccounts();
+                this.toggle();
+              }}
+            >
+              Save account
+            </Button>{' '}
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }

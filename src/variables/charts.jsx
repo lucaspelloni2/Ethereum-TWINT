@@ -308,7 +308,7 @@ const dashboardShippedProductsChart = {
             11025,
             11868,
             11035,
-            10699,
+            1,
             10295,
             10635,
             10533,

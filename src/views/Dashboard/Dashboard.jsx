@@ -3,7 +3,7 @@ import {
     Card, CardHeader, CardBody, CardFooter, CardTitle, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Table,
 } from 'reactstrap';
 // react plugin used to create charts
-import { Line, Bar } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 // function that returns a color based on an interval of numbers
 
 import {
@@ -18,8 +18,12 @@ import {
 } from 'variables/charts.jsx';
 
 import { tasks } from 'variables/general.jsx';
+import MonthChart from "../../components/MonthChart/MonthChart";
+import YearChart from "../../components/YearChart/YearChart";
+import DayChart from "../../components/DayChart/DayChart";
 
 class Dashboard extends React.Component{
+
     render(){
         return (
             <div>
@@ -31,88 +35,9 @@ class Dashboard extends React.Component{
                 />
                 <div className="content">
                     <Row>
-                        <Col xs={12} md={4}>
-                            <Card className="card-chart">
-                                <CardHeader>
-                                    <CardCategory>Current Month</CardCategory>
-                                    <CardTitle>Performance MTD</CardTitle>
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
-                                            <i className="now-ui-icons loader_gear"></i>
-                                        </DropdownToggle>
-                                        <DropdownMenu right>
-                                            <DropdownItem>Action</DropdownItem>
-                                            <DropdownItem>Another Action</DropdownItem>
-                                            <DropdownItem>Something else here</DropdownItem>
-                                            <DropdownItem className="text-danger">Remove data</DropdownItem>
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                </CardHeader>
-                                <CardBody>
-                                    <div className="chart-area">
-                                        <Line data={dashboardShippedProductsChart.data} options={dashboardShippedProductsChart.options} />
-                                    </div>
-                                </CardBody>
-                                <CardFooter>
-                                    <Stats>
-                                        {[
-                                            { i: "now-ui-icons arrows-1_refresh-69", t: "Just Updated"}
-                                        ]}
-                                    </Stats>
-                                </CardFooter>
-                            </Card>
-                        </Col>
-                        <Col xs={12} md={4}>
-                            <Card className="card-chart">
-                                <CardHeader>
-                                    <CardCategory>Current Year </CardCategory>
-                                    <CardTitle>Performance YTD </CardTitle>
-                                    <UncontrolledDropdown>
-                                        <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
-                                            <i className="now-ui-icons loader_gear"></i>
-                                        </DropdownToggle>
-                                        <DropdownMenu right>
-                                            <DropdownItem>Action</DropdownItem>
-                                            <DropdownItem>Another Action</DropdownItem>
-                                            <DropdownItem>Something else here</DropdownItem>
-                                            <DropdownItem className="text-danger">Remove data</DropdownItem>
-                                        </DropdownMenu>
-                                    </UncontrolledDropdown>
-                                </CardHeader>
-                                <CardBody>
-                                    <div className="chart-area">
-                                        <Line data={dashboardAllProductsChart.data} options={dashboardAllProductsChart.options} />
-                                    </div>
-                                </CardBody>
-                                <CardFooter>
-                                    <Stats>
-                                        {[
-                                            { i: "now-ui-icons arrows-1_refresh-69", t: "Just Updated"}
-                                        ]}
-                                    </Stats>
-                                </CardFooter>
-                            </Card>
-                        </Col>
-                        <Col xs={12} md={4}>
-                            <Card className="card-chart">
-                                <CardHeader>
-                                    <CardCategory>Last 24h</CardCategory>
-                                    <CardTitle>Performance 24 Hours</CardTitle>
-                                </CardHeader>
-                                <CardBody>
-                                    <div className="chart-area">
-                                        <Bar data={dashboard24HoursPerformanceChart.data} options={dashboard24HoursPerformanceChart.options} />
-                                    </div>
-                                </CardBody>
-                                <CardFooter>
-                                    <Stats>
-                                        {[
-                                            { i: "now-ui-icons ui-2_time-alarm", t: "Last 7 days"}
-                                        ]}
-                                    </Stats>
-                                </CardFooter>
-                            </Card>
-                        </Col>
+                       <MonthChart/>
+                        <YearChart/>
+                        <DayChart/>
                     </Row>
                     <Row>
                       <Col xs={12} md={6}>
