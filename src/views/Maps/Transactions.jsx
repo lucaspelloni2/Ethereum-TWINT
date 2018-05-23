@@ -50,7 +50,7 @@ class Transactions extends React.Component {
     let request = new XMLHttpRequest();
 
     let self = this;
-    request.onreadystatechange = function() {
+    request.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         let response = JSON.parse(this.responseText);
         let transactions = response.result;
@@ -75,7 +75,7 @@ class Transactions extends React.Component {
     // multiplied by 1000 so that the argument is in milliseconds, not seconds.
     let date = new Date(unix_timestamp * 1000);
 
-    let day = date.getDay();
+    let day = date.getDate();
     let month = date.getMonth();
     let year = date.getFullYear();
 
@@ -133,47 +133,53 @@ class Transactions extends React.Component {
             <div style={{overflow: 'scroll', maxHeight: 220}}>
               <Table responsive>
                 <thead className="text-primary">
-                  <tr>
-                    <th>TxHash</th>
-                    <th>Age</th>
-                    <th>Status</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Value</th>
-                  </tr>
+                <tr>
+                  <th>TxHash</th>
+                  <th>Age</th>
+                  <th>Status</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Value</th>
+                </tr>
                 </thead>
                 <tbody>
-                  {this.state.transactions.map(transaction => {
-                    return (
-                      <tr key={transaction.hash}>
-                        {<td>{transaction.hash.substring(0, 10)}</td>}
-                        {<td>{this.getDateTime(transaction.timeStamp)}</td>}
-                        {<td>{transaction.txreceipt_status}</td>}
-                        {
-                          <td>
-                            <a
-                              href={
-                                'https://etherscan.io/address/' +
-                                transaction.from
-                              }
-                              target="_blank"
-                            >
-                              {transaction.from.substring(0, 10)}..
-                            </a>
-                          </td>
-                        }
-                        {<td>{this.renderNameOrTxs(transaction)}</td>}
-                        {
-                          <td>
-                            {this.props.web3.utils.fromWei(
-                              transaction.value,
-                              'ether'
-                            )}
-                          </td>
-                        }
-                      </tr>
-                    );
-                  })}
+                {this.state.transactions.map(transaction => {
+                  return (
+                    <tr key={transaction.hash}>
+                      {<td>{transaction.hash.substring(0, 10)}</td>}
+                      {<td>{this.getDateTime(transaction.timeStamp)}</td>}
+                      {<td>
+                        <i
+                          className={transaction.isError === '1'
+                            ? ("now-ui-icons ui-1_simple-remove")
+                            : ("now-ui-icons ui-1_check")}
+                        />{' '}
+                      </td>}
+                      {
+                        <td>
+                          <a
+                            href={
+                              'https://etherscan.io/address/' +
+                              transaction.from
+                            }
+                            target="_blank"
+                          >
+                            {transaction.from.substring(0, 10)}..
+                          </a>
+                        </td>
+                      }
+                      {<td>{this.renderNameOrTxs(transaction)}</td>}
+                      {
+                        <td>
+                          {this.props.web3.utils.fromWei(
+                            transaction.value,
+                            'ether'
+                          ) + ' ETH'}
+                        </td>
+                      }
+                    </tr>
+                  );
+                })}
                 </tbody>
               </Table>
             </div>
