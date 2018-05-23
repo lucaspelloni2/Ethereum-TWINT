@@ -75,26 +75,6 @@ class FullScreenMap extends React.Component {
       });
   }
 
-  getTransactions() {
-    let request = new XMLHttpRequest();
-    const API_KEY_TOKEN = 'F64HG3A3WTVCV7W5BD77FPZ6ETRH29X3WG';
-    const url_first =
-      'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
-    const url_second = '&startblock=0&endblock=99999999&sort=asc&apikey=';
-    let address = this.state.account.ethAddress;
-    let url = url_first + address + url_second + API_KEY_TOKEN;
-
-    request.onreadystatechange = function() {
-      if (this.readyState === 4 && this.status === 200) {
-        let response = JSON.parse(this.responseText);
-        console.log(response);
-      }
-    };
-
-    request.open('GET', url, true);
-    request.send();
-  }
-
   transferMoney() {
     this.state.web3.eth.sendTransaction({
       from: this.state.account.ethAddress,

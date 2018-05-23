@@ -28,7 +28,7 @@ class Transactions extends React.Component {
   async componentDidMount() {
     this.interval = setInterval(async () => {
       this.getTransactions();
-    }, 200);
+    }, 1500);
   }
 
   componentWillUnmount() {
@@ -78,6 +78,7 @@ class Transactions extends React.Component {
                 <tr>
                   <th>TxHash</th>
                   <th>Status</th>
+                  <th>To</th>
                   <th>Value</th>
                 </tr>
               </thead>
@@ -87,7 +88,8 @@ class Transactions extends React.Component {
                     <tr key={transaction.hash}>
                       {<td>{transaction.hash.substring(0, 10)}</td>}
                       {<td>{transaction.txreceipt_status}</td>}
-                      {<td>{transaction.to}</td>}
+                      {<td>{transaction.to.substring(0, 10)}</td>}
+                      {<td>{this.props.web3.utils.fromWei(transaction.value, 'ether')}</td>}
                     </tr>
                   );
                 })}
@@ -95,38 +97,6 @@ class Transactions extends React.Component {
             </Table>
           </div>{' '}
         </CardBody>
-
-
-        {/*                <CardBody>
-                  <Label for={'amount'}>Amount (in ETH)</Label>
-                  <Input
-                    id="amount"
-                    placeholder={'Insert your amount'}
-                    onChange={this.handleAmountChange.bind(this)}
-                  />
-                  <Label for={'address'}>To:</Label>
-                  <Select
-                    name="form-field-name"
-                    value={
-                      this.state.selectedAccount
-                        ? this.state.selectedAccount
-                        : null
-                    }
-                    onChange={this.handleAccountChange.bind(this)}
-                    options={AddressBook.map(obj => ({
-                      label: obj.name,
-                      value: obj
-                    }))}
-                  />
-                  <Button
-                    onClick={() => {
-                      this.transferMoney();
-                    }}
-                  >
-                    Send money
-                  </Button>
-                </CardBody>
-                */}
       </Card>
     );
   }
