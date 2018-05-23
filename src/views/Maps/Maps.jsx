@@ -19,6 +19,8 @@ import Web3 from 'web3';
 import AddressBook from './AddressBook';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import Transactions from './Transactions';
+import NotificationAlert from 'react-notification-alert';
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -28,14 +30,15 @@ class FullScreenMap extends React.Component {
 
     this.state = {
       account: {
-        ethAddress: '',
+        ethAddress: null,
         ethBalance: 0
       },
       web3: web3,
       addresses: [],
 
-      selectedAccount: 'default',
+      selectedAccount: null,
       amount: '0.00',
+
       modal: false,
       addedAccount: {
         name: null,
@@ -46,7 +49,11 @@ class FullScreenMap extends React.Component {
     };
 
     this.toggle = this.toggle.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+    this.notify = this.notify.bind(this);
   }
+
+  onDismiss() {}
 
   async componentDidMount() {
     let addresses = await this.getUserAddresses();
@@ -60,7 +67,6 @@ class FullScreenMap extends React.Component {
       account: account,
       addresses: addresses
     });
-    console.log(this.state);
   }
 
   getUserAddresses() {
@@ -80,12 +86,10 @@ class FullScreenMap extends React.Component {
       to: this.state.selectedAccount.value.address,
       value: this.state.web3.utils.toWei(this.state.amount, 'ether')
     });
-    console.log('this address ', this.state.selectedAccount.address);
-    console.log(this.state.account);
   }
 
-  handleAccountChange(e) {
-    this.setState({selectedAccount: e});
+  handleAccountChange(obj) {
+    this.setState({selectedAccount: obj});
   }
 
   handleAmountChange(e) {
@@ -114,9 +118,46 @@ class FullScreenMap extends React.Component {
     this.setState({accounts: AddressBook.getAccounts()});
   }
 
+  notify(color, place, message) {
+    let type;
+    switch (color) {
+      case 1:
+        type = 'primary';
+        break;
+      case 2:
+        type = 'success';
+        break;
+      case 3:
+        type = 'danger';
+        break;
+      case 4:
+        type = 'warning';
+        break;
+      case 5:
+        type = 'info';
+        break;
+      default:
+        break;
+    }
+    let options = {};
+    options = {
+      place: place,
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type,
+      icon: 'now-ui-icons ui-1_bell-53',
+      autoDismiss: 7
+    };
+    this.refs.notificationAlert.notificationAlert(options);
+  }
+
   render() {
     return (
       <div>
+        <NotificationAlert ref="notificationAlert" />
         <PanelHeader size="sm" />
         <div className="content">
           <Row>
@@ -124,7 +165,13 @@ class FullScreenMap extends React.Component {
               <Card>
                 <CardHeader>Send your money</CardHeader>
                 <CardBody>
-                  <Label for={'address'}>Address</Label>
+                  <Label for={'amount'}>Amount (in ETH)</Label>
+                  <Input
+                    id="amount"
+                    placeholder={'Insert your amount'}
+                    onChange={this.handleAmountChange.bind(this)}
+                  />
+                  <Label for={'address'}>To:</Label>
                   <Select
                     name="form-field-name"
                     value={
@@ -138,13 +185,12 @@ class FullScreenMap extends React.Component {
                       value: obj
                     }))}
                   />
-                  <Label for={'amount'}>Amount (in ETH)</Label>
-                  <Input
-                    id="amount"
-                    placeholder={'Insert your amount'}
-                    onChange={this.handleAmountChange.bind(this)}
-                  />
                   <Button
+                    color={'primary'}
+                    disabled={
+                      this.state.amount === '0.00' ||
+                      this.state.selectedAccount === 'default'
+                    }
                     onClick={() => {
                       this.transferMoney();
                     }}
@@ -181,6 +227,7 @@ class FullScreenMap extends React.Component {
                               {
                                 <td>
                                   <i
+                                    style={{cursor: 'pointer'}}
                                     className="now-ui-icons ui-1_simple-remove"
                                     onClick={() => {
                                       AddressBook.removeAccount(account);
@@ -207,6 +254,16 @@ class FullScreenMap extends React.Component {
                   </div>
                 </CardBody>
               </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              {this.state.account.ethAddress !== null ? (
+                <Transactions
+                  web3={this.state.web3}
+                  account={this.state.account}
+                />
+              ) : null}
             </Col>
           </Row>
         </div>
@@ -247,6 +304,14 @@ class FullScreenMap extends React.Component {
                 AddressBook.addAccount(this.state.addedAccount);
                 this.fetchAccounts();
                 this.toggle();
+                this.notify(
+                  2,
+                  'tr',
+                  <div>
+                    A new user called {this.state.addedAccount.name} has been
+                    successfully added
+                  </div>
+                );
               }}
             >
               Save account

@@ -49,7 +49,6 @@ class UserAccountOverlay extends React.Component {
       <div className='userPopOver'>
         <PopoverBody>
           <div className='popOverTag'>ETH address: {this.state.account.ethAddress}
-          {this.state.account.ethAddress}
           </div>
           <div className='popOverTag'> ETH balance: {this.state.account.ethBalance}</div>
         </PopoverBody>
