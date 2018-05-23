@@ -14,6 +14,7 @@ import Web3 from 'web3';
 import AddressBook from './AddressBook';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import Transactions from "./Transactions";
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -29,8 +30,8 @@ class FullScreenMap extends React.Component {
       web3: web3,
       addresses: [],
 
-      selectedAccount: 'default',
-      amount: '0.00'
+      amount: '0.00',
+      selectedAccount: null
     };
   }
 
@@ -46,7 +47,6 @@ class FullScreenMap extends React.Component {
       account: account,
       addresses: addresses
     });
-    console.log(this.state);
   }
 
   getUserAddresses() {
@@ -60,19 +60,36 @@ class FullScreenMap extends React.Component {
       });
   }
 
+  getTransactions() {
+    let request = new XMLHttpRequest();
+    const API_KEY_TOKEN = 'F64HG3A3WTVCV7W5BD77FPZ6ETRH29X3WG';
+    const url_first = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
+    const url_second = '&startblock=0&endblock=99999999&sort=asc&apikey=';
+    let address = this.state.account.ethAddress;
+    let url = url_first + address + url_second + API_KEY_TOKEN;
+
+    request.onreadystatechange = function() {
+      if (this.readyState === 4 && this.status === 200) {
+        let response = JSON.parse(this.responseText);
+        console.log(response);
+      }
+    };
+
+    request.open("GET", url, true);
+    request.send();
+
+  }
+
   transferMoney() {
     this.state.web3.eth.sendTransaction({
       from: this.state.account.ethAddress,
       to: this.state.selectedAccount.value.address,
       value: this.state.web3.utils.toWei(this.state.amount, 'ether')
     });
-    console.log('this address ', this.state.selectedAccount.address);
-    console.log(this.state.account);
   }
 
-  handleAccountChange(e) {
-    this.setState({selectedAccount: e});
-    console.log(this.state.selectedAccount);
+  handleAccountChange(obj) {
+    this.setState({selectedAccount: obj});
   }
 
   handleAmountChange(e) {
@@ -89,7 +106,13 @@ class FullScreenMap extends React.Component {
               <Card>
                 <CardHeader>Send your money</CardHeader>
                 <CardBody>
-                  <Label for={'address'}>Address</Label>
+                  <Label for={'amount'}>Amount (in ETH)</Label>
+                  <Input
+                    id="amount"
+                    placeholder={'Insert your amount'}
+                    onChange={this.handleAmountChange.bind(this)}
+                  />
+                  <Label for={'address'}>To:</Label>
                   <Select
                     name="form-field-name"
                     value={
@@ -103,12 +126,6 @@ class FullScreenMap extends React.Component {
                       value: obj
                     }))}
                   />
-                  <Label for={'amount'}>Amount (in ETH)</Label>
-                  <Input
-                    id="amount"
-                    placeholder={'Insert your amount'}
-                    onChange={this.handleAmountChange.bind(this)}
-                  />
                   <Button
                     onClick={() => {
                       this.transferMoney();
@@ -118,6 +135,10 @@ class FullScreenMap extends React.Component {
                   </Button>
                 </CardBody>
               </Card>
+              {/*<Transactions*/}
+                {/*web3={this.state.web3}*/}
+                {/*account={this.state.account}*/}
+              {/*/>*/}
             </Col>
 
             <Col xs={6}>
