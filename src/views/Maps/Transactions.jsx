@@ -26,7 +26,13 @@ class Transactions extends React.Component {
   }
 
   async componentDidMount() {
-    this.getTransactions();
+    this.interval = setInterval(async () => {
+      this.getTransactions();
+    }, 200);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getTransactions() {
@@ -48,7 +54,6 @@ class Transactions extends React.Component {
         let response = JSON.parse(this.responseText);
         let transactions = response.result;
         self.updateTransactions(transactions);
-        // console.log(transactions);
       }
     };
 
@@ -90,6 +95,7 @@ class Transactions extends React.Component {
             </Table>
           </div>{' '}
         </CardBody>
+
 
         {/*                <CardBody>
                   <Label for={'amount'}>Amount (in ETH)</Label>
