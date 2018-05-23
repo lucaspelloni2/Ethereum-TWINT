@@ -14,7 +14,8 @@ class MonthChart extends React.Component {
     super(props);
 
     this.state = {
-      chartPrices: []
+      chartPrices: [],
+      crypto: ''
     }
     ;
   }
@@ -24,18 +25,21 @@ class MonthChart extends React.Component {
     this.pushIntoChart(data);
   }
 
-  async componentDidUpdate() {
-    let data = await getPrices(this.props.crypto, 30, 'day');
-    this.pushIntoChart(data);
+  async componentWillReceiveProps(nextProps) {
+    if(nextProps.crypto !== this.state.crypto) {
+      let data = await getPrices(nextProps.crypto, 30, 'day');
+      this.pushIntoChart(data, nextProps.crypto);
+    }
   }
 
-  pushIntoChart(data) {
+  pushIntoChart(data, crypto) {
     let prices = [];
     let labels = [];
     data.Data.map(data => prices.push(data.close));
     data.Data.map(data => labels.push(new Date(data.time*1000).toLocaleDateString()));
 
     this.setState({
+      crypto : crypto,
       chartPrices: prices,
       labels: labels,
       dateFrom: new Date(data.TimeFrom*1000).toLocaleDateString(),
