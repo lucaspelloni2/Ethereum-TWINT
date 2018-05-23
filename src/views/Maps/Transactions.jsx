@@ -26,7 +26,13 @@ class Transactions extends React.Component {
   }
 
   async componentDidMount() {
-    this.getTransactions();
+    this.interval = setInterval(async () => {
+      this.getTransactions();
+    }, 200);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getTransactions() {
@@ -47,7 +53,6 @@ class Transactions extends React.Component {
         let response = JSON.parse(this.responseText);
         let transactions = response.result;
         self.updateTransactions(transactions);
-        console.log(transactions);
       }
     };
 
@@ -72,6 +77,7 @@ class Transactions extends React.Component {
                     <tr>
                       <th>TxHash</th>
                       <th>Status</th>
+                      <th>To</th>
                       <th>Value</th>
                     </tr>
                     </thead>
@@ -81,7 +87,8 @@ class Transactions extends React.Component {
                         <tr key={transaction.hash}>
                           {<td>{transaction.hash.substring(0, 10)}</td>}
                           {<td>{transaction.txreceipt_status}</td>}
-                          {<td>{transaction.to}</td>}
+                          {<td>{transaction.to.substring(0, 10)}</td>}
+                          {<td>{this.props.web3.utils.fromWei(transaction.value, 'ether')}</td>}
                         </tr>
                       );
                     })}
