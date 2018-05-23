@@ -1,0 +1,16 @@
+.userPopOver{
+    position: absolute;
+    margin-top: 9em;
+    width: 515px;
+    transition: 0.2s ease-in-out;
+    background-color: rgba(255, 255, 255, 0.95);
+    right: 50px;
+    top: -50px;
+    box-shadow: 0 0 11px 0 rgba(0, 0, 0, 0.21);
+    z-index: 10;
+    line-height: 20px;
+    font-size: 14px;
+    word-break: break-all;
+    border-radius: 8px;
+}
+
