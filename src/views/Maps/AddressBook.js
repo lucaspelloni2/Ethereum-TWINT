@@ -1,11 +1,11 @@
 const AddressBook = [
   {
-    name: 'Lucas Pelloni',
+    name: 'Lukas Pelloni',
     address: '0x199d7e3cE60B45De7ee29E0c3a1a2d66197A20D4'
   },
   {
     name: 'Severin Wullschleger',
-    address: '0x199d7e3cE60B45De7ee29E0c3a1a2d66197A20D4'
+    address: '0x8745BE2c582BCFC50ACF9d2C61CadEd65a4E3825'
   },
   {
     name: 'Andreas Schaufehubul',
@@ -13,7 +13,7 @@ const AddressBook = [
   },
   {
     name: 'Vitalik Buterin',
-    address: '0x199d7e3cE60B45De7ee29E0c3a1a2d66197A20D4'
+    address: '0xc7470e71627eA66bBFBfD275A616b07273295493'
   },
   {
     name: 'Satoshi Nakamoto',
