@@ -145,6 +145,11 @@ class FullScreenMap extends React.Component {
                     onChange={this.handleAmountChange.bind(this)}
                   />
                   <Button
+                    color={'primary'}
+                    disabled={
+                      this.state.amount === '0.00' ||
+                      this.state.selectedAccount === 'default'
+                    }
                     onClick={() => {
                       this.transferMoney();
                     }}
