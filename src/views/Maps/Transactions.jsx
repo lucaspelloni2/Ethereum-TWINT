@@ -22,7 +22,7 @@ class Transactions extends React.Component {
 
     this.state = {
       transactions: []
-    }
+    };
   }
 
   async componentDidMount() {
@@ -31,7 +31,8 @@ class Transactions extends React.Component {
 
   getTransactions() {
     const API_KEY_TOKEN = 'F64HG3A3WTVCV7W5BD77FPZ6ETRH29X3WG';
-    const url_first = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
+    const url_first =
+      'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
     const url_second = '&startblock=0&endblock=99999999&sort=desc&apikey=';
 
     console.log(this.props.account.ethAddress);
@@ -39,11 +40,10 @@ class Transactions extends React.Component {
 
     let url = url_first + address + url_second + API_KEY_TOKEN;
 
-
     let request = new XMLHttpRequest();
 
     let self = this;
-    request.onreadystatechange = function () {
+    request.onreadystatechange = function() {
       if (this.readyState === 4 && this.status === 200) {
         let response = JSON.parse(this.responseText);
         let transactions = response.result;
@@ -52,7 +52,7 @@ class Transactions extends React.Component {
       }
     };
 
-    request.open("GET", url, true);
+    request.open('GET', url, true);
     request.send();
   }
 
@@ -64,33 +64,34 @@ class Transactions extends React.Component {
 
   render() {
     return (
-              <Card>
-                <CardHeader>My Transactions</CardHeader>
-
-                <div style={{overflow: 'scroll', maxHeight: 220}}>
-                  <Table responsive>
-                    <thead className="text-primary">
-                    <tr>
-                      <th>TxHash</th>
-                      <th>Status</th>
-                      <th>Value</th>
+      <Card>
+        <CardHeader>My Transactions</CardHeader>
+        <CardBody>
+          <div style={{overflow: 'scroll', maxHeight: 220}}>
+            <Table responsive>
+              <thead className="text-primary">
+                <tr>
+                  <th>TxHash</th>
+                  <th>Status</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.transactions.map(transaction => {
+                  return (
+                    <tr key={transaction.hash}>
+                      {<td>{transaction.hash.substring(0, 10)}</td>}
+                      {<td>{transaction.txreceipt_status}</td>}
+                      {<td>{transaction.to}</td>}
                     </tr>
-                    </thead>
-                    <tbody>
-                    {this.state.transactions.map(transaction => {
-                      return (
-                        <tr key={transaction.hash}>
-                          {<td>{transaction.hash.substring(0, 10)}</td>}
-                          {<td>{transaction.txreceipt_status}</td>}
-                          {<td>{transaction.to}</td>}
-                        </tr>
-                      );
-                    })}
-                    </tbody>
-                  </Table>
-                </div>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>{' '}
+        </CardBody>
 
-{/*                <CardBody>
+        {/*                <CardBody>
                   <Label for={'amount'}>Amount (in ETH)</Label>
                   <Input
                     id="amount"
@@ -120,7 +121,7 @@ class Transactions extends React.Component {
                   </Button>
                 </CardBody>
                 */}
-              </Card>
+      </Card>
     );
   }
 }
