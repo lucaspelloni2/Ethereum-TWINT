@@ -1,5 +1,5 @@
 import React from 'react';
-import {PopoverBody, PopoverHeader} from "reactstrap";
+import {PopoverBody} from "reactstrap";
 import Web3 from 'web3';
 import 'assets/css/header.css';
 

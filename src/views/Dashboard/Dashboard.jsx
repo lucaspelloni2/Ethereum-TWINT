@@ -5,14 +5,11 @@ import {
 } from 'reactstrap';
 import { Line } from 'react-chartjs-2';
 import {
-    PanelHeader, Stats, CardCategory, Tasks
+    PanelHeader, Stats, Tasks
 } from 'components';
 
 import {
-    dashboardPanelChart,
-    dashboardShippedProductsChart,
-    dashboardAllProductsChart,
-    dashboard24HoursPerformanceChart
+    dashboardPanelChart
 } from 'variables/charts.jsx';
 
 import { tasks } from 'variables/general.jsx';

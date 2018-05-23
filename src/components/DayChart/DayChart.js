@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Card, CardBody, CardFooter, CardHeader, CardTitle, Col, DropdownItem, DropdownMenu, DropdownToggle,
-  UncontrolledDropdown
-} from "reactstrap";
+import {Card, CardBody, CardFooter, CardHeader, CardTitle, Col} from "reactstrap";
 import CardCategory from "../CardElements/CardCategory";
 import Stats from "../Stats/Stats";
 import { Bar} from 'react-chartjs-2';

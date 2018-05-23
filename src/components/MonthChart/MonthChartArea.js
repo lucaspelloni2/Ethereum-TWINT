@@ -6,7 +6,6 @@ const chartColor = '#FFFFFF';
 class MonthChartArea extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.labels)
   }
 
   // General configuration for the charts with Line gradientStroke

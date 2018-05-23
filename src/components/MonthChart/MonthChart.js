@@ -5,8 +5,6 @@ import {
 } from "reactstrap";
 import CardCategory from "../CardElements/CardCategory";
 import Stats from "../Stats/Stats";
-import {Line} from 'react-chartjs-2';
-import {dashboardShippedProductsChart} from 'variables/charts.jsx';
 import {getPrices} from '../../services/cryptoCompareAPIService.js'
 import MonthChartArea from "./MonthChartArea";
 
@@ -16,7 +14,6 @@ class MonthChart extends React.Component {
     super(props);
 
     this.state = {
-      lastMonthUnix: 0,
       chartPrices: []
     }
     ;
