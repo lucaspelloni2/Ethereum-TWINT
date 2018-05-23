@@ -21,7 +21,8 @@ class Transactions extends React.Component {
     super();
 
     this.state = {
-      transactions: []
+      transactions: [],
+      txsLoading: true
     };
   }
 
@@ -59,6 +60,8 @@ class Transactions extends React.Component {
 
     request.open('GET', url, true);
     request.send();
+
+    this.setState({txsLoading: false});
   }
 
   updateTransactions(transactions) {
@@ -86,37 +89,41 @@ class Transactions extends React.Component {
       <Card>
         <CardHeader>My Transactions</CardHeader>
         <CardBody>
-          <div style={{overflow: 'scroll', maxHeight: 220}}>
-            <Table responsive>
-              <thead className="text-primary">
-                <tr>
-                  <th>TxHash</th>
-                  <th>Status</th>
-                  <th>To</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.transactions.map(transaction => {
-                  return (
-                    <tr key={transaction.hash}>
-                      {<td>{transaction.hash.substring(0, 10)}</td>}
-                      {<td>{transaction.txreceipt_status}</td>}
-                      {<td>{this.renderNameOrTxs(transaction)}</td>}
-                      {
-                        <td>
-                          {this.props.web3.utils.fromWei(
-                            transaction.value,
-                            'ether'
-                          )}
-                        </td>
-                      }
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </div>{' '}
+          {this.state.txsLoading ? (
+            <div>loading..</div>
+          ) : (
+            <div style={{overflow: 'scroll', maxHeight: 220}}>
+              <Table responsive>
+                <thead className="text-primary">
+                  <tr>
+                    <th>TxHash</th>
+                    <th>Status</th>
+                    <th>To</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.transactions.map(transaction => {
+                    return (
+                      <tr key={transaction.hash}>
+                        {<td>{transaction.hash.substring(0, 10)}</td>}
+                        {<td>{transaction.txreceipt_status}</td>}
+                        {<td>{this.renderNameOrTxs(transaction)}</td>}
+                        {
+                          <td>
+                            {this.props.web3.utils.fromWei(
+                              transaction.value,
+                              'ether'
+                            )}
+                          </td>
+                        }
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
+          )}
         </CardBody>
       </Card>
     );
