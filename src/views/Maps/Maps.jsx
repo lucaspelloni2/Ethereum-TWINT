@@ -29,7 +29,7 @@ class FullScreenMap extends React.Component {
       web3: web3,
       addresses: [],
 
-      selectedAddress: 'default',
+      selectedAccount: 'default',
       amount: '0.00'
     };
   }
@@ -62,14 +62,14 @@ class FullScreenMap extends React.Component {
   transferMoney() {
     this.state.web3.eth.sendTransaction({
       from: this.state.account.address,
-      to: this.state.selectedAddress,
+      to: this.state.selectedAccount,
       value: this.state.web3.utils.toWei(this.state.amount, 'ether')
     });
-    console.log('this address ', this.state.selectedAddress);
+    console.log('this address ', this.state.selectedAccount);
   }
 
-  handleAddressChange(obj) {
-    this.setState({selectedAddress: obj});
+  handleAccountChange(obj) {
+    this.setState({selectedAccount: obj});
   }
 
   handleAmountChange(e) {
@@ -90,11 +90,11 @@ class FullScreenMap extends React.Component {
                   <Select
                     name="form-field-name"
                     value={
-                      this.state.selectedAddress
-                        ? this.state.selectedAddress
+                      this.state.selectedAccount
+                        ? this.state.selectedAccount
                         : null
                     }
-                    onChange={this.handleAddressChange.bind(this)}
+                    onChange={this.handleAccountChange.bind(this)}
                     options={AddressBook.map(obj => ({
                       label: obj.name,
                       value: obj

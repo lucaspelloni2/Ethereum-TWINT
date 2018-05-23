@@ -13,7 +13,7 @@ const AddressBook = [
   },
   {
     name: 'Vitalik Buterin',
-    address: '0xc7470e71627eA66bBFBfD275A616b07273295493'
+    address: '0x8745BE2c582BCFC50ACF9d2C61CadEd65a4E3825'
   },
   {
     name: 'Satoshi Nakamoto',
