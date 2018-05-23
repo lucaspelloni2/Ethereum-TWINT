@@ -67,6 +67,20 @@ class Transactions extends React.Component {
     });
   }
 
+  renderNameOrTxs(transaction) {
+    let to = transaction.to;
+    let toShort = transaction.to.substring(0, 10);
+    const accounts = AddressBook.getAccounts();
+
+    let knownAccount = accounts.find(a => a.address === to);
+
+    if (knownAccount) {
+      return <div>{knownAccount.name}</div>;
+    } else {
+      return <div>{toShort}</div>;
+    }
+  }
+
   render() {
     return (
       <Card>
@@ -88,8 +102,15 @@ class Transactions extends React.Component {
                     <tr key={transaction.hash}>
                       {<td>{transaction.hash.substring(0, 10)}</td>}
                       {<td>{transaction.txreceipt_status}</td>}
-                      {<td>{transaction.to.substring(0, 10)}</td>}
-                      {<td>{this.props.web3.utils.fromWei(transaction.value, 'ether')}</td>}
+                      {<td>{this.renderNameOrTxs(transaction)}</td>}
+                      {
+                        <td>
+                          {this.props.web3.utils.fromWei(
+                            transaction.value,
+                            'ether'
+                          )}
+                        </td>
+                      }
                     </tr>
                   );
                 })}
