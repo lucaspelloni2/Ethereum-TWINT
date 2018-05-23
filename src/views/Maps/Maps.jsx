@@ -178,10 +178,10 @@ class FullScreenMap extends React.Component {
                   </Button>
                 </CardBody>
               </Card>
-              {/*<Transactions*/}
-                {/*web3={this.state.web3}*/}
-                {/*account={this.state.account}*/}
-              {/*/>*/}
+              <Transactions
+                web3={this.state.web3}
+                account={this.state.account}
+              />
             </Col>
 
             <Col xs={6}>

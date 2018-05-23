@@ -4,6 +4,7 @@ import {
   Col,
   Card,
   CardHeader,
+  Table,
   CardBody,
   Button,
   Input,
@@ -25,33 +26,68 @@ class Transactions extends React.Component {
   }
 
   async componentDidMount() {
-
+    this.getTransactions();
   }
 
   getTransactions() {
-    let request = new XMLHttpRequest();
     const API_KEY_TOKEN = 'F64HG3A3WTVCV7W5BD77FPZ6ETRH29X3WG';
     const url_first = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
-    const url_second = '&startblock=0&endblock=99999999&sort=asc&apikey=';
-    let address = this.props.account.ethAddress;
+    const url_second = '&startblock=0&endblock=99999999&sort=desc&apikey=';
+
+    let address = '0x8745BE2c582BCFC50ACF9d2C61CadEd65a4E3825'; //TODO lucas: integrate this.props.account.ethAddress;
+
     let url = url_first + address + url_second + API_KEY_TOKEN;
 
-    request.onreadystatechange = function() {
+
+    let request = new XMLHttpRequest();
+
+    let self = this;
+    request.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         let response = JSON.parse(this.responseText);
-        console.log(response);
+        let transactions = response.result;
+        self.updateTransactions(transactions);
+        console.log(transactions);
       }
     };
 
     request.open("GET", url, true);
     request.send();
+  }
 
+  updateTransactions(transactions) {
+    this.setState({
+      transactions: transactions
+    });
   }
 
   render() {
     return (
               <Card>
                 <CardHeader>My Transactions</CardHeader>
+
+                <div style={{overflow: 'scroll', maxHeight: 220}}>
+                  <Table responsive>
+                    <thead className="text-primary">
+                    <tr>
+                      <th>TxHash</th>
+                      <th>Status</th>
+                      <th>Value</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {this.state.transactions.map(transaction => {
+                      return (
+                        <tr key={transaction.hash}>
+                          {<td>{transaction.hash.substring(0, 10)}</td>}
+                          {<td>{transaction.txreceipt_status}</td>}
+                          {<td>{transaction.to}</td>}
+                        </tr>
+                      );
+                    })}
+                    </tbody>
+                  </Table>
+                </div>
 
 {/*                <CardBody>
                   <Label for={'amount'}>Amount (in ETH)</Label>
