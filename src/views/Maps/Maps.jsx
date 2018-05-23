@@ -38,11 +38,12 @@ class FullScreenMap extends React.Component {
     let addresses = await this.getUserAddresses();
     let address = addresses[0];
     let balance = await this.state.web3.eth.getBalance(address);
+
+    let account = Object.assign({}, this.state.account);
+    account.ethAddress = address;
+    account.ethBalance = balance;
     this.setState({
-      account: {
-        address,
-        balance: this.state.web3.utils.fromWei(balance, 'ether')
-      },
+      account: account,
       addresses: addresses
     });
     console.log(this.state);
@@ -61,15 +62,17 @@ class FullScreenMap extends React.Component {
 
   transferMoney() {
     this.state.web3.eth.sendTransaction({
-      from: this.state.account.address,
-      to: this.state.selectedAccount,
+      from: this.state.account.ethAddress,
+      to: this.state.selectedAccount.address,
       value: this.state.web3.utils.toWei(this.state.amount, 'ether')
     });
-    console.log('this address ', this.state.selectedAccount);
+    console.log('this address ', this.state.selectedAccount.address);
+    console.log(this.state.account);
   }
 
   handleAccountChange(obj) {
     this.setState({selectedAccount: obj});
+    console.log(this.state.selectedAccount);
   }
 
   handleAmountChange(e) {
@@ -79,7 +82,7 @@ class FullScreenMap extends React.Component {
   render() {
     return (
       <div>
-        <PanelHeader size="sm" />
+        <PanelHeader size="sm"/>
         <div className="content">
           <Row>
             <Col xs={6}>
@@ -121,7 +124,7 @@ class FullScreenMap extends React.Component {
               <Card>
                 <CardHeader>
                   Search an address{' '}
-                  <i className="now-ui-icons business_badge" />
+                  <i className="now-ui-icons business_badge"/>
                 </CardHeader>
                 <CardBody>
                   <Label>Select an address from your book </Label>
