@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-    Card, CardHeader, CardBody, CardFooter, CardTitle, Row, Col, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Table,
+  Card, CardHeader, CardBody, CardFooter, CardTitle, Row, Col,
+  Table, ButtonGroup, Button,
 } from 'reactstrap';
-// react plugin used to create charts
 import { Line } from 'react-chartjs-2';
-// function that returns a color based on an interval of numbers
-
 import {
     PanelHeader, Stats, CardCategory, Tasks
 } from 'components';
@@ -24,6 +22,32 @@ import DayChart from "../../components/DayChart/DayChart";
 
 class Dashboard extends React.Component{
 
+    constructor(props) {
+      super(props);
+      this.state = {
+        crypto: 'ETH'
+      };
+    }
+
+
+
+      changeCrypto(crypto) {
+      let currency;
+      switch (crypto) {
+        case 'ETH':
+          currency = 'ETH';
+          break;
+        case 'BTC':
+          currency = 'BTC';
+          break;
+        default:
+          currency = 'ETH';
+      }
+      this.setState({
+        crypto: currency
+      });
+      }
+
     render(){
 
         return (
@@ -35,10 +59,18 @@ class Dashboard extends React.Component{
                     }
                 />
                 <div className="content">
+                  <Row>
+                    <Col xs={12} md={6}>
+                    <ButtonGroup>
+                      <Button onClick={() => this.changeCrypto('ETH')}>Ethereum</Button>
+                      <Button onClick={() => this.changeCrypto('BTC')}>Bitcoin</Button>
+                    </ButtonGroup>
+                    </Col>
+                  </Row>
                     <Row>
-                       <MonthChart/>
-                        <YearChart/>
-                        <DayChart/>
+                       <MonthChart crypto={this.state.crypto}/>
+                        <YearChart crypto={this.state.crypto}/>
+                        <DayChart crypto={this.state.crypto}/>
                     </Row>
                     <Row>
                       <Col xs={12} md={6}>

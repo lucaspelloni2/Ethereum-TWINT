@@ -23,7 +23,12 @@ class MonthChart extends React.Component {
   }
 
   async componentDidMount() {
-    let data = await getPrices('ETH', 30, 'day');
+    let data = await getPrices(this.props.crypto, 30, 'day');
+    this.pushIntoChart(data);
+  }
+
+  async componentDidUpdate() {
+    let data = await getPrices(this.props.crypto, 30, 'day');
     this.pushIntoChart(data);
   }
 
@@ -42,13 +47,12 @@ class MonthChart extends React.Component {
   }
 
   render() {
-
     return (
       <Col xs={12} md={4}>
         <Card className="card-chart">
           <CardHeader>
-            <CardCategory>Current Month: {this.state.dateFrom} - {this.state.dateTo}</CardCategory>
-            <CardTitle>Performance MTD</CardTitle>
+            <CardCategory>Period: {this.state.dateFrom} - {this.state.dateTo}</CardCategory>
+            <CardTitle>{this.props.crypto}</CardTitle>
             <UncontrolledDropdown>
               <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
                 <i className="now-ui-icons loader_gear"></i>
