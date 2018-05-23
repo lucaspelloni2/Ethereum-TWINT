@@ -181,6 +181,7 @@ class FullScreenMap extends React.Component {
                               {
                                 <td>
                                   <i
+                                    style={{cursor: 'pointer'}}
                                     className="now-ui-icons ui-1_simple-remove"
                                     onClick={() => {
                                       AddressBook.removeAccount(account);
