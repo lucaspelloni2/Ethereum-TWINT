@@ -40,7 +40,9 @@ class FullScreenMap extends React.Component {
       addedAccount: {
         name: null,
         address: null
-      }
+      },
+
+      accounts: AddressBook.getAccounts()
     };
 
     this.toggle = this.toggle.bind(this);
@@ -84,7 +86,6 @@ class FullScreenMap extends React.Component {
 
   handleAccountChange(e) {
     this.setState({selectedAccount: e});
-    console.log(this.state.selectedAccount);
   }
 
   handleAmountChange(e) {
@@ -107,8 +108,10 @@ class FullScreenMap extends React.Component {
     let addedAccount = Object.assign({}, this.state.addedAccount);
     addedAccount.address = e.target.value;
     this.setState({addedAccount: addedAccount});
+  }
 
-    console.log(this.state.addedAccount);
+  fetchAccounts() {
+    this.setState({accounts: AddressBook.getAccounts()});
   }
 
   render() {
@@ -130,7 +133,7 @@ class FullScreenMap extends React.Component {
                         : null
                     }
                     onChange={this.handleAccountChange.bind(this)}
-                    options={AddressBook.getAccounts().map(obj => ({
+                    options={this.state.accounts.map(obj => ({
                       label: obj.name,
                       value: obj
                     }))}
@@ -166,14 +169,26 @@ class FullScreenMap extends React.Component {
                         <tr>
                           <th>Name</th>
                           <th>Address</th>
+                          <th />
                         </tr>
                       </thead>
                       <tbody>
-                        {AddressBook.getAccounts().map(account => {
+                        {this.state.accounts.map(account => {
                           return (
                             <tr key={account.address}>
                               {<td>{account.name}</td>}
                               {<td>{account.address}</td>}
+                              {
+                                <td>
+                                  <i
+                                    className="now-ui-icons ui-1_simple-remove"
+                                    onClick={() => {
+                                      AddressBook.removeAccount(account);
+                                      this.fetchAccounts();
+                                    }}
+                                  />{' '}
+                                </td>
+                              }
                             </tr>
                           );
                         })}
@@ -230,6 +245,7 @@ class FullScreenMap extends React.Component {
               color="primary"
               onClick={() => {
                 AddressBook.addAccount(this.state.addedAccount);
+                this.fetchAccounts();
                 this.toggle();
               }}
             >

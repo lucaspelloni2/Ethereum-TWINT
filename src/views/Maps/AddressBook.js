@@ -36,7 +36,21 @@ class AddressBook extends React.Component {
     localStorage.setItem('accounts', JSON.stringify(accounts));
   }
 
-  static removeAccount(account) {}
+  static removeAccount(account) {
+    console.log('to remove ', account);
+    let accounts = this.getAccounts();
+    const removeIndex = accounts
+      .map(a => {
+        return a.address;
+      })
+      .indexOf(account.address);
+
+    if (removeIndex > -1) {
+      accounts.splice(removeIndex, 1);
+      // if there is an account to delete
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+    }
+  }
 
   static getAccounts() {
     return localStorage.getItem('accounts')
