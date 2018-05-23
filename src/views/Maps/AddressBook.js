@@ -1,4 +1,6 @@
-const AddressBook = [
+import React from 'react';
+
+const data = [
   {
     name: 'Lukas Pelloni',
     address: '0x199d7e3cE60B45De7ee29E0c3a1a2d66197A20D4'
@@ -24,5 +26,23 @@ const AddressBook = [
     address: '0x199d7e3cE60B45De7ee29E0c3a1a2d66197A20D4'
   }
 ];
+
+class AddressBook extends React.Component {
+  static addAccount(account) {
+    let accounts = localStorage.getItem('accounts')
+      ? JSON.parse(localStorage.getItem('accounts'))
+      : [];
+    accounts.push(account);
+    localStorage.setItem('accounts', JSON.stringify(accounts));
+  }
+
+  static removeAccount(account) {}
+
+  static getAccounts() {
+    return localStorage.getItem('accounts')
+      ? JSON.parse(localStorage.getItem('accounts'))
+      : [];
+  }
+}
 
 export default AddressBook;

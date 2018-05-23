@@ -36,7 +36,11 @@ class FullScreenMap extends React.Component {
 
       selectedAccount: 'default',
       amount: '0.00',
-      modal: false
+      modal: false,
+      addedAccount: {
+        name: null,
+        address: null
+      }
     };
 
     this.toggle = this.toggle.bind(this);
@@ -93,6 +97,20 @@ class FullScreenMap extends React.Component {
     });
   }
 
+  handleAddName(e) {
+    let addedAccount = Object.assign({}, this.state.addedAccount);
+    addedAccount.name = e.target.value;
+    this.setState({addedAccount: addedAccount});
+  }
+
+  handleAddAddress(e) {
+    let addedAccount = Object.assign({}, this.state.addedAccount);
+    addedAccount.address = e.target.value;
+    this.setState({addedAccount: addedAccount});
+
+    console.log(this.state.addedAccount);
+  }
+
   render() {
     return (
       <div>
@@ -112,7 +130,7 @@ class FullScreenMap extends React.Component {
                         : null
                     }
                     onChange={this.handleAccountChange.bind(this)}
-                    options={AddressBook.map(obj => ({
+                    options={AddressBook.getAccounts().map(obj => ({
                       label: obj.name,
                       value: obj
                     }))}
@@ -151,7 +169,7 @@ class FullScreenMap extends React.Component {
                         </tr>
                       </thead>
                       <tbody>
-                        {AddressBook.map(account => {
+                        {AddressBook.getAccounts().map(account => {
                           return (
                             <tr key={account.address}>
                               {<td>{account.name}</td>}
@@ -187,18 +205,34 @@ class FullScreenMap extends React.Component {
           <ModalBody>
             <div>
               <Label for="addName">Name</Label>
-              <Input placeholder="name" id="addName" type="text" />
+              <Input
+                placeholder="name"
+                id="addName"
+                type="text"
+                onChange={this.handleAddName.bind(this)}
+              />
             </div>
             <div>
               <Label for="addAddress">Address</Label>
-              <Input placeholder="address" id="addAddress" type="text" />
+              <Input
+                placeholder="address"
+                id="addAddress"
+                type="text"
+                onChange={this.handleAddAddress.bind(this)}
+              />
             </div>
           </ModalBody>
           <ModalFooter>
             <Button color="secondary" onClick={this.toggle}>
               Cancel
             </Button>
-            <Button color="primary" onClick={this.toggle}>
+            <Button
+              color="primary"
+              onClick={() => {
+                AddressBook.addAccount(this.state.addedAccount);
+                this.toggle();
+              }}
+            >
               Save account
             </Button>{' '}
           </ModalFooter>
