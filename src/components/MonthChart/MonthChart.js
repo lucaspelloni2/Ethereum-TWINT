@@ -5,9 +5,41 @@ import {
 } from "reactstrap";
 import CardCategory from "../CardElements/CardCategory";
 import Stats from "../Stats/Stats";
-import { Line } from 'react-chartjs-2';
-import {dashboardShippedProductsChart} from 'variables/charts.jsx';;
-class MonthChart extends React.Component{
+import {Line} from 'react-chartjs-2';
+import {dashboardShippedProductsChart} from 'variables/charts.jsx';
+import {getPrices} from '../../services/cryptoCompareAPIService.js'
+import MonthChartArea from "./MonthChartArea";
+
+class MonthChart extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      lastMonthUnix: 0,
+      chartPrices: []
+    }
+    ;
+  }
+
+  async componentDidMount() {
+    let data = await getPrices('ETH', 30, 'day');
+    this.pushIntoChart(data);
+  }
+
+  pushIntoChart(data) {
+    let prices = [];
+    let labels = [];
+    data.Data.map(data => prices.push(data.close));
+    data.Data.map(data => labels.push(new Date(data.time*1000).toLocaleDateString()));
+
+    this.setState({
+      chartPrices: prices,
+      labels: labels,
+      dateFrom: new Date(data.TimeFrom*1000).toLocaleDateString(),
+      dateTo: new Date(data.TimeTo*1000).toLocaleDateString()
+    });
+  }
 
   render() {
 
@@ -15,7 +47,7 @@ class MonthChart extends React.Component{
       <Col xs={12} md={4}>
         <Card className="card-chart">
           <CardHeader>
-            <CardCategory>Current Month</CardCategory>
+            <CardCategory>Current Month: {this.state.dateFrom} - {this.state.dateTo}</CardCategory>
             <CardTitle>Performance MTD</CardTitle>
             <UncontrolledDropdown>
               <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
@@ -30,14 +62,13 @@ class MonthChart extends React.Component{
             </UncontrolledDropdown>
           </CardHeader>
           <CardBody>
-            <div className="chart-area">
-              <Line data={dashboardShippedProductsChart.data} options={dashboardShippedProductsChart.options} />
-            </div>
+            {this.state.chartPrices.length > 0 ? (
+              <MonthChartArea chartPrices={this.state.chartPrices} labels={this.state.labels}/>) : null}
           </CardBody>
           <CardFooter>
             <Stats>
               {[
-                { i: "now-ui-icons arrows-1_refresh-69", t: "Just Updated"}
+                {i: "now-ui-icons arrows-1_refresh-69", t: "Just Updated"}
               ]}
             </Stats>
           </CardFooter>

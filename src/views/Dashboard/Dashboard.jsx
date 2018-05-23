@@ -25,6 +25,7 @@ import DayChart from "../../components/DayChart/DayChart";
 class Dashboard extends React.Component{
 
     render(){
+
         return (
             <div>
                 <PanelHeader
