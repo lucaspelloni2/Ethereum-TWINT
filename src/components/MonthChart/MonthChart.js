@@ -16,8 +16,7 @@ class MonthChart extends React.Component {
     this.state = {
       chartPrices: [],
       crypto: ''
-    }
-    ;
+    };
   }
 
   async componentDidMount() {
@@ -53,7 +52,7 @@ class MonthChart extends React.Component {
         <Card className="card-chart">
           <CardHeader>
             <CardCategory>Period: {this.state.dateFrom} - {this.state.dateTo}</CardCategory>
-            <CardTitle>{this.props.crypto}</CardTitle>
+            <CardTitle>Last Month - {this.props.crypto}</CardTitle>
             <UncontrolledDropdown>
               <DropdownToggle className="btn-round btn-simple btn-icon" color="default">
                 <i className="now-ui-icons loader_gear"></i>
