@@ -19,7 +19,7 @@ import Web3 from 'web3';
 import AddressBook from './AddressBook';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import Transactions from "./Transactions";
+import Transactions from './Transactions';
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -29,7 +29,7 @@ class FullScreenMap extends React.Component {
 
     this.state = {
       account: {
-        ethAddress: '',
+        ethAddress: null,
         ethBalance: 0
       },
       web3: web3,
@@ -45,7 +45,6 @@ class FullScreenMap extends React.Component {
       },
 
       accounts: AddressBook.getAccounts()
-
     };
 
     this.toggle = this.toggle.bind(this);
@@ -79,7 +78,8 @@ class FullScreenMap extends React.Component {
   getTransactions() {
     let request = new XMLHttpRequest();
     const API_KEY_TOKEN = 'F64HG3A3WTVCV7W5BD77FPZ6ETRH29X3WG';
-    const url_first = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
+    const url_first =
+      'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
     const url_second = '&startblock=0&endblock=99999999&sort=asc&apikey=';
     let address = this.state.account.ethAddress;
     let url = url_first + address + url_second + API_KEY_TOKEN;
@@ -91,9 +91,8 @@ class FullScreenMap extends React.Component {
       }
     };
 
-    request.open("GET", url, true);
+    request.open('GET', url, true);
     request.send();
-
   }
 
   transferMoney() {
@@ -178,10 +177,13 @@ class FullScreenMap extends React.Component {
                   </Button>
                 </CardBody>
               </Card>
-              <Transactions
-                web3={this.state.web3}
-                account={this.state.account}
-              />
+
+              {this.state.account.ethAddress !== null ? (
+                <Transactions
+                  web3={this.state.web3}
+                  account={this.state.account}
+                />
+              ) : null}
             </Col>
 
             <Col xs={6}>
