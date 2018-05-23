@@ -8,7 +8,11 @@ import {
   Button,
   Input,
   Label,
-  Table
+  Table,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter
 } from 'reactstrap';
 import {PanelHeader} from 'components';
 import Web3 from 'web3';
@@ -31,8 +35,11 @@ class FullScreenMap extends React.Component {
       addresses: [],
 
       selectedAccount: 'default',
-      amount: '0.00'
+      amount: '0.00',
+      modal: false
     };
+
+    this.toggle = this.toggle.bind(this);
   }
 
   async componentDidMount() {
@@ -78,6 +85,12 @@ class FullScreenMap extends React.Component {
 
   handleAmountChange(e) {
     this.setState({amount: e.target.value});
+  }
+
+  toggle() {
+    this.setState({
+      modal: !this.state.modal
+    });
   }
 
   render() {
@@ -150,13 +163,46 @@ class FullScreenMap extends React.Component {
                     </Table>
                   </div>
                   <div style={{marginTop: 20}}>
-                    <Button color={'primary'}>Add a new address</Button>
+                    <Button
+                      color={'primary'}
+                      onClick={() => {
+                        this.toggle();
+                      }}
+                    >
+                      Add a new address
+                    </Button>
                   </div>
                 </CardBody>
               </Card>
             </Col>
           </Row>
         </div>
+
+        <Modal
+          isOpen={this.state.modal}
+          toggle={this.toggle}
+          // className={this.props.className}
+        >
+          <ModalHeader toggle={this.toggle}>Add new account</ModalHeader>
+          <ModalBody>
+            <div>
+              <Label for="addName">Name</Label>
+              <Input placeholder="name" id="addName" type="text" />
+            </div>
+            <div>
+              <Label for="addAddress">Address</Label>
+              <Input placeholder="address" id="addAddress" type="text" />
+            </div>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={this.toggle}>
+              Cancel
+            </Button>
+            <Button color="primary" onClick={this.toggle}>
+              Save account
+            </Button>{' '}
+          </ModalFooter>
+        </Modal>
       </div>
     );
   }
