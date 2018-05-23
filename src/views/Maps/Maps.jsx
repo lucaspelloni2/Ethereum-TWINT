@@ -20,6 +20,7 @@ import AddressBook from './AddressBook';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import Transactions from './Transactions';
+import NotificationAlert from 'react-notification-alert';
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -48,7 +49,11 @@ class FullScreenMap extends React.Component {
     };
 
     this.toggle = this.toggle.bind(this);
+    this.onDismiss = this.onDismiss.bind(this);
+    this.notify = this.notify.bind(this);
   }
+
+  onDismiss() {}
 
   async componentDidMount() {
     let addresses = await this.getUserAddresses();
@@ -113,9 +118,46 @@ class FullScreenMap extends React.Component {
     this.setState({accounts: AddressBook.getAccounts()});
   }
 
+  notify(color, place, message) {
+    let type;
+    switch (color) {
+      case 1:
+        type = 'primary';
+        break;
+      case 2:
+        type = 'success';
+        break;
+      case 3:
+        type = 'danger';
+        break;
+      case 4:
+        type = 'warning';
+        break;
+      case 5:
+        type = 'info';
+        break;
+      default:
+        break;
+    }
+    let options = {};
+    options = {
+      place: place,
+      message: (
+        <div>
+          <div>{message}</div>
+        </div>
+      ),
+      type: type,
+      icon: 'now-ui-icons ui-1_bell-53',
+      autoDismiss: 7
+    };
+    this.refs.notificationAlert.notificationAlert(options);
+  }
+
   render() {
     return (
       <div>
+        <NotificationAlert ref="notificationAlert" />
         <PanelHeader size="sm" />
         <div className="content">
           <Row>
@@ -259,6 +301,14 @@ class FullScreenMap extends React.Component {
                 AddressBook.addAccount(this.state.addedAccount);
                 this.fetchAccounts();
                 this.toggle();
+                this.notify(
+                  2,
+                  'tr',
+                  <div>
+                    A new user called {this.state.addedAccount.name} has been
+                    successfully added
+                  </div>
+                );
               }}
             >
               Save account

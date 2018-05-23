@@ -21,14 +21,15 @@ class Transactions extends React.Component {
     super();
 
     this.state = {
-      transactions: []
+      transactions: [],
+      txsLoading: true
     };
   }
 
   async componentDidMount() {
     this.interval = setInterval(async () => {
       this.getTransactions();
-    }, 1500);
+    }, 4000);
   }
 
   componentWillUnmount() {
@@ -49,7 +50,7 @@ class Transactions extends React.Component {
     let request = new XMLHttpRequest();
 
     let self = this;
-    request.onreadystatechange = function() {
+    request.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         let response = JSON.parse(this.responseText);
         let transactions = response.result;
@@ -59,6 +60,8 @@ class Transactions extends React.Component {
 
     request.open('GET', url, true);
     request.send();
+
+    this.setState({txsLoading: false});
   }
 
   updateTransactions(transactions) {
@@ -70,7 +73,7 @@ class Transactions extends React.Component {
   getDateTime(unix_timestamp) {
     // Create a new JavaScript Date object based on the timestamp
     // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-    let date = new Date(unix_timestamp*1000);
+    let date = new Date(unix_timestamp * 1000);
 
     let day = date.getDay();
     let month = date.getMonth();
@@ -87,25 +90,42 @@ class Transactions extends React.Component {
     return day + "." + month + "." + year + " " + hours + ':' + minutes.substr(-2); // + ':' + seconds.substr(-2);
   }
 
+  renderNameOrTxs(transaction) {
+    let to = transaction.to;
+    let toShort = transaction.to.substring(0, 10);
+    const accounts = AddressBook.getAccounts();
+
+    let knownAccount = accounts.find(a => a.address === to);
+
+    if (knownAccount) {
+      return <div>{knownAccount.name}</div>;
+    } else {
+      return <div>{toShort}</div>;
+    }
+  }
+
+
   render() {
     return (
       <Card>
         <CardHeader>My Transactions</CardHeader>
         <CardBody>
-          <div style={{overflow: 'scroll', maxHeight: 220}}>
-            <Table responsive>
-              <thead className="text-primary">
+          {this.state.txsLoading ? (
+            <div>loading..</div>
+          ) : (
+            <div style={{overflow: 'scroll', maxHeight: 220}}>
+              <Table responsive>
+                <thead className="text-primary">
                 <tr>
                   <th>TxHash</th>
                   <th>Age</th>
                   <th>Status</th>
-                  <th>Type</th>
                   <th>From</th>
                   <th>To</th>
                   <th>Value</th>
                 </tr>
-              </thead>
-              <tbody>
+                </thead>
+                <tbody>
                 {this.state.transactions.map(transaction => {
                   return (
                     <tr key={transaction.hash}>
@@ -113,15 +133,16 @@ class Transactions extends React.Component {
                       {<td>{this.getDateTime(transaction.timeStamp)}</td>}
                       {<td>{transaction.txreceipt_status}</td>}
                       {<td>{transaction.from.substring(0, 10)}</td>}
-                      {<td>{transaction.to.substring(0, 10)}</td>}
+                      {<td>{this.renderNameOrTxs(transaction)}</td>}
                       {<td>{this.props.web3.utils.fromWei(transaction.value, 'ether')}</td>}
-                      {console.log(transaction)}
                     </tr>
                   );
                 })}
-              </tbody>
-            </Table>
-          </div>{' '}
+                </tbody>
+              </Table>
+            </div>
+          )}
+
         </CardBody>
       </Card>
     );
