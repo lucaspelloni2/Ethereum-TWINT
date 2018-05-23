@@ -40,7 +40,8 @@ class Transactions extends React.Component {
     const url_first = 'http://api-ropsten.etherscan.io/api?module=account&action=txlist&address=';
     const url_second = '&startblock=0&endblock=99999999&sort=desc&apikey=';
 
-    let address = '0x8745BE2c582BCFC50ACF9d2C61CadEd65a4E3825'; //TODO lucas: integrate this.props.account.ethAddress;
+    console.log(this.props.account.ethAddress);
+    let address = this.props.account.ethAddress; // WOOOOW LOOK AT THAT
 
     let url = url_first + address + url_second + API_KEY_TOKEN;
 
