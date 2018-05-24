@@ -21,6 +21,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import Transactions from './Transactions';
 import NotificationAlert from 'react-notification-alert';
+import ContractProps from './ContractProps'
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -28,222 +29,8 @@ class FullScreenMap extends React.Component {
 
     let web3 = new Web3(Web3.givenProvider);
     const contract = new web3.eth.Contract(
-      [
-        {
-          "constant": false,
-          "inputs": [
-            {
-              "name": "reqId",
-              "type": "uint256"
-            }
-          ],
-          "name": "fulfillRequest",
-          "outputs": [],
-          "payable": true,
-          "stateMutability": "payable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            {
-              "name": "value",
-              "type": "uint256"
-            },
-            {
-              "name": "debitor",
-              "type": "address"
-            },
-            {
-              "name": "reason",
-              "type": "bytes32"
-            }
-          ],
-          "name": "requestMoneyFrom",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": false,
-          "inputs": [
-            {
-              "name": "reqId",
-              "type": "uint256"
-            }
-          ],
-          "name": "withdrawRequest",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            {
-              "name": "",
-              "type": "address"
-            },
-            {
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "name": "creditorReq",
-          "outputs": [
-            {
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            {
-              "name": "",
-              "type": "address"
-            },
-            {
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "name": "debitorReq",
-          "outputs": [
-            {
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            {
-              "name": "creditor",
-              "type": "address"
-            }
-          ],
-          "name": "getRequestsByCreditor",
-          "outputs": [
-            {
-              "name": "reqIds",
-              "type": "uint256[]"
-            },
-            {
-              "name": "values",
-              "type": "uint256[]"
-            },
-            {
-              "name": "creditors",
-              "type": "address[]"
-            },
-            {
-              "name": "debitors",
-              "type": "address[]"
-            },
-            {
-              "name": "states",
-              "type": "uint8[]"
-            },
-            {
-              "name": "reasons",
-              "type": "bytes32[]"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            {
-              "name": "debitor",
-              "type": "address"
-            }
-          ],
-          "name": "getRequestsByDebitor",
-          "outputs": [
-            {
-              "name": "reqIds",
-              "type": "uint256[]"
-            },
-            {
-              "name": "values",
-              "type": "uint256[]"
-            },
-            {
-              "name": "creditors",
-              "type": "address[]"
-            },
-            {
-              "name": "debitors",
-              "type": "address[]"
-            },
-            {
-              "name": "states",
-              "type": "uint8[]"
-            },
-            {
-              "name": "reasons",
-              "type": "bytes32[]"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        },
-        {
-          "constant": true,
-          "inputs": [
-            {
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "name": "requests",
-          "outputs": [
-            {
-              "name": "id",
-              "type": "uint256"
-            },
-            {
-              "name": "value",
-              "type": "uint256"
-            },
-            {
-              "name": "creditor",
-              "type": "address"
-            },
-            {
-              "name": "debitor",
-              "type": "address"
-            },
-            {
-              "name": "state",
-              "type": "uint8"
-            },
-            {
-              "name": "reason",
-              "type": "bytes32"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
-        }
-      ],
-      '0x3e75d99dc7b3857caabc9f98ca3bd715f758c4ff'
+      ContractProps.CONTRACT_ABI,
+      ContractProps.CONTRACT_ADDRESS
     );
 
     this.state = {
@@ -264,7 +51,12 @@ class FullScreenMap extends React.Component {
       },
 
       accounts: AddressBook.getAccounts(),
-      contract: contract
+      contract: contract,
+      selectedRequestAccount: null,
+      requestAmount: '0.00',
+      reason: '',
+
+      requests: []
     };
 
     this.toggle = this.toggle.bind(this);
@@ -282,10 +74,16 @@ class FullScreenMap extends React.Component {
     let account = Object.assign({}, this.state.account);
     account.ethAddress = address;
     account.ethBalance = balance;
+
+    let requests = await this.getAllRequests(address);
+
     this.setState({
       account: account,
-      addresses: addresses
+      addresses: addresses,
+      requests: requests
     });
+
+    console.log(this.state.requests);
   }
 
   getUserAddresses() {
@@ -307,12 +105,153 @@ class FullScreenMap extends React.Component {
     });
   }
 
+  requestMoney() {
+    this.state.contract.methods.requestMoneyFrom(
+      this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
+      this.state.selectedRequestAccount.value.address,
+      this.state.web3.utils.asciiToHex('0x0')
+    ).send({
+      from: this.state.account.ethAddress
+    })
+      .on('transactionHash', tx => {
+
+      })
+      .on('receipt', res => {
+        if (res.status) {
+          console.log('success');
+        } else {
+          console.log('fail');
+        }
+      })
+      .on('confirmation', function (confirmationNr) {
+
+      });
+  }
+
+  /*
+    call with this.fulfillRequest(this.state.requests[1].reqId, this.state.requests[1].value);
+   */
+  fulfillRequest(reqId, valueInEth) {
+    this.state.contract.methods.fulfillRequest(reqId)
+      .send({
+        from: this.state.account.ethAddress,
+        value: this.state.web3.utils.toWei(valueInEth, 'ether')
+      })
+      .on('transactionHash', tx => {
+
+      })
+      .on('receipt', res => {
+        if (res.status) {
+          console.log('success');
+        } else {
+          console.log('fail');
+        }
+      })
+      .on('confirmation', function(confirmationNr) {
+
+      });
+  }
+
+  /*
+    call with this.withdrawRequest(this.state.requests[1].reqId);
+   */
+  withdrawRequest(reqId) {
+    this.state.contract.methods.withdrawRequest(reqId)
+      .send({
+        from: this.state.account.ethAddress
+      })
+      .on('transactionHash', tx => {
+
+      })
+      .on('receipt', res => {
+        if (res.status) {
+          console.log('success');
+        } else {
+          console.log('fail');
+        }
+      })
+      .on('confirmation', function(confirmationNr) {
+
+      });
+  }
+
+  getRequestFrom(address){
+    let requests = [];
+    return this.state.contract.methods
+      .getRequestsByCreditor(address)
+      .call({from: this.state.account.ethAddress})
+      .then(res => {
+        for (let i = 0; i < res.reqIds.length; i++) {
+          let request = {
+            reqId: res.reqIds[i],
+            value: this.state.web3.utils.fromWei(res.values[i], 'ether'),
+            creditor: res.creditors[i],
+            debitor: res.debitors[i],
+            state: res.states[i],
+            reason: this.state.web3.utils.hexToAscii(res.reasons[i])
+          };
+          requests.push(request);
+        }
+        return requests;
+      })
+      .catch(err => {
+        console.log('error getting requests' + err);
+      });
+  }
+
+  getRequestFor(address) {
+    let requests = [];
+    return this.state.contract.methods
+      .getRequestsByDebitor(address)
+      .call({from: this.state.account.ethAddress})
+      .then(res => {
+        for (let i = 0; i < res.reqIds.length; i++) {
+          let request = {
+            reqId: res.reqIds[i],
+            value: this.state.web3.utils.fromWei(res.values[i], 'ether'),
+            creditor: res.creditors[i],
+            debitor: res.debitors[i],
+            state: res.states[i],
+            reason: this.state.web3.utils.hexToAscii(res.reasons[i])
+          };
+          requests.push(request);
+        }
+        return requests;
+      })
+      .catch(err => {
+        console.log('error getting requests' + err);
+      });
+  }
+
+  async getMyRequests() {
+    this.getAllRequests(this.state.account.ethAddress);
+  }
+
+  async getAllRequests(address) {
+    let req1 = await this.getRequestFrom(address);
+    let req2 = await this.getRequestFor(address);
+
+    return req1.concat(req2);
+  }
+
   handleAccountChange(obj) {
     this.setState({selectedAccount: obj});
   }
 
+  handleReqAccountChange(obj) {
+    this.setState({selectedRequestAccount: obj});
+  }
+
   handleAmountChange(e) {
     this.setState({amount: e.target.value});
+  }
+
+  handleReasonChange(e) {
+    this.setState({reason: e.target.value});
+  }
+
+  handleReqAmountChange(e) {
+    this.setState({requestAmount: e.target.value});
   }
 
   toggle() {
@@ -382,7 +321,7 @@ class FullScreenMap extends React.Component {
           <Row>
             <Col xs={6}>
               <Card>
-                <CardHeader>Send your money</CardHeader>
+                <CardHeader>Send money</CardHeader>
                 <CardBody>
                   <Label for={'amount'}>Amount (in ETH)</Label>
                   <Input
@@ -414,7 +353,49 @@ class FullScreenMap extends React.Component {
                       this.transferMoney();
                     }}
                   >
-                    Send money
+                    Send
+                  </Button>
+                </CardBody>
+              </Card>
+              <Card>
+                <CardHeader>Request money</CardHeader>
+                <CardBody>
+                  <Label for={'req-amount'}>Amount (in ETH)</Label>
+                  <Input
+                    id="req-amount"
+                    placeholder={'Insert your amount'}
+                    onChange={this.handleReqAmountChange.bind(this)}
+                  />
+                  <Label for={'req-address'}>From:</Label>
+                  <Select
+                    name="form-field-name"
+                    value={
+                      this.state.selectedRequestAccount
+                        ? this.state.selectedRequestAccount
+                        : null
+                    }
+                    onChange={this.handleReqAccountChange.bind(this)}
+                    options={this.state.accounts.map(obj => ({
+                      label: obj.name,
+                      value: obj
+                    }))}
+                  />
+                  <Label for={'reason'}>Reason</Label>
+                  <Input
+                    id="reason"
+                    onChange={this.handleReasonChange.bind(this)}
+                  />
+                  <Button
+                    color={'primary'}
+                    disabled={
+                      this.state.requestAmount === '0.00' ||
+                      this.state.selectedRequestAccount === 'default'
+                    }
+                    onClick={() => {
+                      this.requestMoney();
+                    }}
+                  >
+                    Request
                   </Button>
                 </CardBody>
               </Card>
