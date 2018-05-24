@@ -22,6 +22,7 @@ import 'react-select/dist/react-select.css';
 import Transactions from './Transactions';
 import NotificationAlert from 'react-notification-alert';
 import ContractProps from './ContractProps'
+import OpenRequests from "./OpenRequests";
 
 class FullScreenMap extends React.Component {
   constructor() {
@@ -82,8 +83,6 @@ class FullScreenMap extends React.Component {
       addresses: addresses,
       requests: requests
     });
-
-    console.log(this.state.requests);
   }
 
   getUserAddresses() {
@@ -452,6 +451,11 @@ class FullScreenMap extends React.Component {
                   </div>
                 </CardBody>
               </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <OpenRequests requests={this.state.requests} web3={this.state.web3}/>
             </Col>
           </Row>
           <Row>
