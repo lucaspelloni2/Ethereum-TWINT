@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   Row,
   Col,
   Card,
@@ -24,12 +25,21 @@ import NotificationAlert from 'react-notification-alert';
 import ContractProps from './ContractProps'
 import OpenRequests from "./OpenRequests";
 
+let web3 = window.web3;
+
 class FullScreenMap extends React.Component {
   constructor() {
     super();
+    let web3Instance = null;
+    if (typeof web3 !== 'undefined') {
+      this.web3Provider = web3.currentProvider;
+      web3Instance = new Web3(web3.currentProvider);
+    } else {
+      this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      web3Instance = new Web3(this.web3Provider);
+    }
 
-    let web3 = new Web3(Web3.givenProvider);
-    const contract = new web3.eth.Contract(
+    const contract = new web3Instance.eth.Contract(
       ContractProps.CONTRACT_ABI,
       ContractProps.CONTRACT_ADDRESS
     );
@@ -39,7 +49,7 @@ class FullScreenMap extends React.Component {
         ethAddress: null,
         ethBalance: 0
       },
-      web3: web3,
+      web3: web3Instance,
       addresses: [],
 
       selectedAccount: null,
@@ -65,24 +75,30 @@ class FullScreenMap extends React.Component {
     this.notify = this.notify.bind(this);
   }
 
-  onDismiss() {}
+  onDismiss() {
+  }
 
   async componentDidMount() {
     let addresses = await this.getUserAddresses();
-    let address = addresses[0];
-    let balance = await this.state.web3.eth.getBalance(address);
-
-    let account = Object.assign({}, this.state.account);
-    account.ethAddress = address;
-    account.ethBalance = balance;
-
-    let requests = await this.getAllRequests(address);
-
     this.setState({
-      account: account,
-      addresses: addresses,
-      requests: requests
+      addresses: addresses
     });
+
+    if (addresses.length > 0) {
+      let address = addresses[0];
+      let balance = await this.state.web3.eth.getBalance(address);
+
+      let account = Object.assign({}, this.state.account);
+      account.ethAddress = address;
+      account.ethBalance = balance;
+
+      let requests = await this.getAllRequests(address);
+
+      this.setState({
+        account: account,
+        requests: requests
+      });
+    }
   }
 
   getUserAddresses() {
@@ -146,7 +162,7 @@ class FullScreenMap extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function(confirmationNr) {
+      .on('confirmation', function (confirmationNr) {
 
       });
   }
@@ -169,12 +185,12 @@ class FullScreenMap extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function(confirmationNr) {
+      .on('confirmation', function (confirmationNr) {
 
       });
   }
 
-  getRequestFrom(address){
+  getRequestFrom(address) {
     let requests = [];
     return this.state.contract.methods
       .getRequestsByCreditor(address)
@@ -314,128 +330,136 @@ class FullScreenMap extends React.Component {
   render() {
     return (
       <div>
-        <NotificationAlert ref="notificationAlert" />
-        <PanelHeader size="sm" />
+        <NotificationAlert ref="notificationAlert"/>
+        <PanelHeader size="sm"/>
         <div className="content">
-          <Row>
-            <Col xs={6}>
-              <Card>
-                <CardHeader>Send money</CardHeader>
-                <CardBody>
-                  <Label for={'amount'}>Amount (in ETH)</Label>
-                  <Input
-                    id="amount"
-                    placeholder={'Insert your amount'}
-                    onChange={this.handleAmountChange.bind(this)}
-                  />
-                  <Label for={'address'}>To:</Label>
-                  <Select
-                    name="form-field-name"
-                    value={
-                      this.state.selectedAccount
-                        ? this.state.selectedAccount
-                        : null
-                    }
-                    onChange={this.handleAccountChange.bind(this)}
-                    options={this.state.accounts.map(obj => ({
-                      label: obj.name,
-                      value: obj
-                    }))}
-                  />
-                  <Button
-                    color={'primary'}
-                    disabled={
-                      this.state.amount === '0.00' ||
-                      this.state.selectedAccount === 'default'
-                    }
-                    onClick={() => {
-                      this.transferMoney();
-                    }}
-                  >
-                    Send
-                  </Button>
-                </CardBody>
-              </Card>
-              <Card>
-                <CardHeader>Request money</CardHeader>
-                <CardBody>
-                  <Label for={'req-amount'}>Amount (in ETH)</Label>
-                  <Input
-                    id="req-amount"
-                    placeholder={'Insert your amount'}
-                    onChange={this.handleReqAmountChange.bind(this)}
-                  />
-                  <Label for={'req-address'}>From:</Label>
-                  <Select
-                    name="form-field-name"
-                    value={
-                      this.state.selectedRequestAccount
-                        ? this.state.selectedRequestAccount
-                        : null
-                    }
-                    onChange={this.handleReqAccountChange.bind(this)}
-                    options={this.state.accounts.map(obj => ({
-                      label: obj.name,
-                      value: obj
-                    }))}
-                  />
-                  <Label for={'reason'}>Reason</Label>
-                  <Input
-                    id="reason"
-                    onChange={this.handleReasonChange.bind(this)}
-                  />
-                  <Button
-                    color={'primary'}
-                    disabled={
-                      this.state.requestAmount === '0.00' ||
-                      this.state.selectedRequestAccount === 'default'
-                    }
-                    onClick={() => {
-                      this.requestMoney();
-                    }}
-                  >
-                    Request
-                  </Button>
-                </CardBody>
-              </Card>
-            </Col>
-
+          <Row>{this.state.addresses > 0
+            ? (
+              <Col xs={6}>
+                <Card>
+                  <CardHeader>Send money</CardHeader>
+                  <CardBody>
+                    <Label for={'amount'}>Amount (in ETH)</Label>
+                    <Input
+                      id="amount"
+                      placeholder={'Insert your amount'}
+                      onChange={this.handleAmountChange.bind(this)}
+                    />
+                    <Label for={'address'}>To:</Label>
+                    <Select
+                      name="form-field-name"
+                      value={
+                        this.state.selectedAccount
+                          ? this.state.selectedAccount
+                          : null
+                      }
+                      onChange={this.handleAccountChange.bind(this)}
+                      options={this.state.accounts.map(obj => ({
+                        label: obj.name,
+                        value: obj
+                      }))}
+                    />
+                    <Button
+                      color={'primary'}
+                      disabled={
+                        this.state.amount === '0.00' ||
+                        this.state.selectedAccount === 'default'
+                      }
+                      onClick={() => {
+                        this.transferMoney();
+                      }}
+                    >
+                      Send
+                    </Button>
+                  </CardBody>
+                </Card>
+                <Card>
+                  <CardHeader>Request money</CardHeader>
+                  <CardBody>
+                    <Label for={'req-amount'}>Amount (in ETH)</Label>
+                    <Input
+                      id="req-amount"
+                      placeholder={'Insert your amount'}
+                      onChange={this.handleReqAmountChange.bind(this)}
+                    />
+                    <Label for={'req-address'}>From:</Label>
+                    <Select
+                      name="form-field-name"
+                      value={
+                        this.state.selectedRequestAccount
+                          ? this.state.selectedRequestAccount
+                          : null
+                      }
+                      onChange={this.handleReqAccountChange.bind(this)}
+                      options={this.state.accounts.map(obj => ({
+                        label: obj.name,
+                        value: obj
+                      }))}
+                    />
+                    <Label for={'reason'}>Reason</Label>
+                    <Input
+                      id="reason"
+                      onChange={this.handleReasonChange.bind(this)}
+                    />
+                    <Button
+                      color={'primary'}
+                      disabled={
+                        this.state.requestAmount === '0.00' ||
+                        this.state.selectedRequestAccount === 'default'
+                      }
+                      onClick={() => {
+                        this.requestMoney();
+                      }}
+                    >
+                      Request
+                    </Button>
+                  </CardBody>
+                </Card>
+              </Col>
+            )
+            : (
+              <Col>
+                <Alert color="warning" >
+                  <span data-notify="message">Please login to MetaMask. You can download MetaMask as a Google Chrome Extension.</span>
+                </Alert>
+              </Col>
+            )}
             <Col xs={6}>
               <Card>
                 <CardHeader>
                   Your Address Book{' '}
-                  <i className="now-ui-icons business_badge" /></CardHeader>
+                  <i className="now-ui-icons business_badge"/></CardHeader>
                 <CardBody>
                   <div style={{overflow: 'scroll', maxHeight: 220}}>
                     <Table responsive>
                       <thead className="text-primary">
-                        <tr>
-                          <th>Name</th>
-                          <th>Address</th>
-                          <th />
-                        </tr>
+                      <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th/>
+                      </tr>
                       </thead>
                       <tbody>
-                        {this.state.accounts.map(account => {
-                          return (
-                            <tr key={account.address}>
-                              {<td>{account.name}</td>}
-                              {<td>{account.address}</td>}
-                              {
-                                <td>
-                                  <i
-                                    style={{cursor: 'pointer'}}
-                                    className="now-ui-icons ui-1_simple-remove"
-                                    onClick={() => {
-                                      AddressBook.removeAccount(account);
-                                      this.fetchAccounts();
-                                    }}
-                                  />{' '}
-                                </td>
-                              }
-                            </tr>
-                          );
-                        })}
+                      {this.state.accounts.map(account => {
+                        return (
+                          <tr key={account.address}>
+                            {<td>{account.name}</td>}
+                            {<td>{account.address}</td>}
+                            {
+                              <td>
+                                <i
+                                  style={{cursor: 'pointer'}}
+                                  className="now-ui-icons ui-1_simple-remove"
+                                  onClick={() => {
+                                    AddressBook.removeAccount(account);
+                                    this.fetchAccounts();
+                                  }}
+                                />{' '}
+                              </td>
+                            }
+                          </tr>
+                        );
+                      })}
                       </tbody>
                     </Table>
                   </div>
@@ -453,21 +477,28 @@ class FullScreenMap extends React.Component {
               </Card>
             </Col>
           </Row>
-          <Row>
-            <Col xs={12}>
-              <OpenRequests requests={this.state.requests} web3={this.state.web3}/>
-            </Col>
-          </Row>
-          <Row>
-            <Col xs={12}>
-              {this.state.account.ethAddress !== null ? (
-                <Transactions
-                  web3={this.state.web3}
-                  account={this.state.account}
-                />
-              ) : null}
-            </Col>
-          </Row>
+
+          {this.state.addresses > 0
+            ? (
+              <div>
+                < Row>
+                  < Col xs={12}>
+                    < OpenRequests requests={this.state.requests} web3={this.state.web3}/>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12}>
+                    {this.state.account.ethAddress !== null ? (
+                      <Transactions
+                        web3={this.state.web3}
+                        account={this.state.account}
+                      />
+                    ) : null}
+                  </Col>
+                </Row>
+              </div>
+            )
+            : null}
         </div>
 
         <Modal
