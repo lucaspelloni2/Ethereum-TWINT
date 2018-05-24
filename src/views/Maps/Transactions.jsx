@@ -102,7 +102,7 @@ class Transactions extends React.Component {
       return (
         <div>
           <a
-            href={'https://etherscan.io/address/' + knownAccount.address}
+            href={'https://ropsten.etherscan.io/address/' + knownAccount.address}
             target="_blank"
           >
             {knownAccount.name}
@@ -113,7 +113,7 @@ class Transactions extends React.Component {
       return (
         <div>
           {' '}
-          <a href={'https://etherscan.io/address/' + address} target="_blank">
+          <a href={'https://ropsten.etherscan.io/address/' + address} target="_blank">
             {addrShort}..
           </a>
         </div>
@@ -145,7 +145,12 @@ class Transactions extends React.Component {
                 {this.state.transactions.map(transaction => {
                   return (
                     <tr key={transaction.hash}>
-                      {<td>{transaction.hash.substring(0, 10)}</td>}
+                      {<td>
+                        {' '}
+                        <a href={'https://ropsten.etherscan.io/tx/' + transaction.hash} target="_blank">
+                          {transaction.hash.substring(0, 10)}..
+                        </a>
+                      </td>}
                       {<td>{this.getDateTime(transaction.timeStamp)}</td>}
                       {<td>
                         {transaction.isError === '1'
