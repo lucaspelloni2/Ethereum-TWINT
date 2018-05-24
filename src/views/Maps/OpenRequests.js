@@ -108,7 +108,7 @@ class OpenRequests extends React.Component {
       }
     } else if (request.state === '2') {
       return (
-        <td><div><i className="now-ui-icons business_bank"/> Withdrawm</div></td>
+        <td><div><i className="now-ui-icons business_bank"/> Withdrawn</div></td>
       );
     } else {
       return (
