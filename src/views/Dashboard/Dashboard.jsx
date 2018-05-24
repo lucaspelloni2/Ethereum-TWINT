@@ -37,6 +37,9 @@ class Dashboard extends React.Component{
         case 'BTC':
           currency = 'BTC';
           break;
+        case 'XRP':
+          currency = 'XRP';
+          break;
         default:
           currency = 'ETH';
       }
@@ -61,6 +64,7 @@ class Dashboard extends React.Component{
                     <ButtonGroup>
                       <Button onClick={() => this.changeCrypto('ETH')}>Ethereum</Button>
                       <Button onClick={() => this.changeCrypto('BTC')}>Bitcoin</Button>
+                      <Button onClick={() => this.changeCrypto('XRP')}>Ripple</Button>
                     </ButtonGroup>
                     </Col>
                   </Row>
