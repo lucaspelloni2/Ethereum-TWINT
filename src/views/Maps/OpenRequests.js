@@ -2,13 +2,15 @@ import React from 'react';
 import {Button, Card, CardBody, CardHeader, Table} from "reactstrap";
 import AddressBook from "./AddressBook";
 import '../../assets/css/demo.css'
+import {ClipLoader} from "react-spinners";
 
 
 class OpenRequests extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      requests: []
+      requests: [],
+      pendingRequests: new Set()
     }
   }
 
@@ -53,6 +55,11 @@ class OpenRequests extends React.Component {
   call with this.fulfillRequest(this.state.requests[1].reqId, this.state.requests[1].value);
  */
   fulfillRequest(reqId, valueInEth) {
+    let pending = this.state.pendingRequests;
+    this.setState({
+      pendingRequests: pending.add(reqId)
+    }
+    );
     this.props.contract.methods.fulfillRequest(reqId)
       .send({
         from: this.props.account.ethAddress,
@@ -63,6 +70,10 @@ class OpenRequests extends React.Component {
       })
       .on('receipt', res => {
         if (res.status) {
+          pending = this.state.pendingRequests;
+          this.setState({
+            pendingRequests: pending.delete(reqId)
+          });
           console.log('success');
         } else {
           console.log('fail');
@@ -77,6 +88,10 @@ class OpenRequests extends React.Component {
   call with this.withdrawRequest(this.state.requests[1].reqId);
  */
   withdrawRequest(reqId) {
+    let pending = this.state.pendingRequests;
+    this.setState({
+      pendingRequests: pending.add(reqId)
+    });
     this.props.contract.methods.withdrawRequest(reqId)
       .send({
         from: this.props.account.ethAddress
@@ -86,6 +101,10 @@ class OpenRequests extends React.Component {
       })
       .on('receipt', res => {
         if (res.status) {
+          pending = this.state.pendingRequests;
+          this.setState({
+            pendingRequests: pending.delete(reqId)
+          });
           console.log('success');
         } else {
           console.log('fail');
@@ -98,6 +117,19 @@ class OpenRequests extends React.Component {
 
 
   renderAction(request) {
+    let pending = this.state.pendingRequests;
+    if(pending.size > 0) {
+      console.log(pending);
+      if(pending.has(parseInt(request.reqId))) {
+        return (
+          <td>
+            <ClipLoader
+              size={35}
+              color={'#00aaff'}/>
+          </td>
+        )
+      }
+    }
     if (request.state === '1') {
       if(this.props.account.ethAddress === request.creditor) {
         return(<td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw Request</Button></td>

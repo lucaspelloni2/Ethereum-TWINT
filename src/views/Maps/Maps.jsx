@@ -424,12 +424,14 @@ class FullScreenMap extends React.Component {
                     <Label for={'req-amount'}>Amount (in ETH)</Label>
                     <Input
                       id="req-amount"
+                      disabled={this.state.requestMoneyPending}
                       placeholder={'Insert your amount'}
                       onChange={this.handleReqAmountChange.bind(this)}
                     />
                     <Label for={'req-address'}>From:</Label>
                     <Select
                       name="form-field-name"
+                      disabled={this.state.requestMoneyPending}
                       value={
                         this.state.selectedRequestAccount
                           ? this.state.selectedRequestAccount
@@ -445,6 +447,7 @@ class FullScreenMap extends React.Component {
                     <Input
                       id="reason"
                       onChange={this.handleReasonChange.bind(this)}
+                      disabled={this.state.requestMoneyPending}
                     />
                     <Button
                       style={{float: 'left'}}
