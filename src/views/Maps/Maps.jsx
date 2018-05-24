@@ -65,7 +65,8 @@ class FullScreenMap extends React.Component {
     this.notify = this.notify.bind(this);
   }
 
-  onDismiss() {}
+  onDismiss() {
+  }
 
   async componentDidMount() {
     let addresses = await this.getUserAddresses();
@@ -77,11 +78,21 @@ class FullScreenMap extends React.Component {
     account.ethBalance = balance;
 
     let requests = await this.getAllRequests(address);
+    let filteredRequests = [];
+
+    let reqIdSet = new Set([]);
+    requests.map(request => {
+      if (!reqIdSet.has(request.reqId)) {
+        filteredRequests.push(request);
+        reqIdSet.add(request.reqId);
+      }
+    });
+
 
     this.setState({
       account: account,
       addresses: addresses,
-      requests: requests
+      requests: filteredRequests
     });
   }
 
@@ -127,54 +138,7 @@ class FullScreenMap extends React.Component {
       });
   }
 
-  /*
-    call with this.fulfillRequest(this.state.requests[1].reqId, this.state.requests[1].value);
-   */
-  fulfillRequest(reqId, valueInEth) {
-    this.state.contract.methods.fulfillRequest(reqId)
-      .send({
-        from: this.state.account.ethAddress,
-        value: this.state.web3.utils.toWei(valueInEth, 'ether')
-      })
-      .on('transactionHash', tx => {
-
-      })
-      .on('receipt', res => {
-        if (res.status) {
-          console.log('success');
-        } else {
-          console.log('fail');
-        }
-      })
-      .on('confirmation', function(confirmationNr) {
-
-      });
-  }
-
-  /*
-    call with this.withdrawRequest(this.state.requests[1].reqId);
-   */
-  withdrawRequest(reqId) {
-    this.state.contract.methods.withdrawRequest(reqId)
-      .send({
-        from: this.state.account.ethAddress
-      })
-      .on('transactionHash', tx => {
-
-      })
-      .on('receipt', res => {
-        if (res.status) {
-          console.log('success');
-        } else {
-          console.log('fail');
-        }
-      })
-      .on('confirmation', function(confirmationNr) {
-
-      });
-  }
-
-  getRequestFrom(address){
+  getRequestFrom(address) {
     let requests = [];
     return this.state.contract.methods
       .getRequestsByCreditor(address)
@@ -227,8 +191,10 @@ class FullScreenMap extends React.Component {
   }
 
   async getAllRequests(address) {
-    let req1 = await this.getRequestFrom(address);
-    let req2 = await this.getRequestFor(address);
+    let req1 = await
+      this.getRequestFrom(address);
+    let req2 = await
+      this.getRequestFor(address);
 
     return req1.concat(req2);
   }
@@ -314,8 +280,8 @@ class FullScreenMap extends React.Component {
   render() {
     return (
       <div>
-        <NotificationAlert ref="notificationAlert" />
-        <PanelHeader size="sm" />
+        <NotificationAlert ref="notificationAlert"/>
+        <PanelHeader size="sm"/>
         <div className="content">
           <Row>
             <Col xs={6}>
@@ -404,38 +370,38 @@ class FullScreenMap extends React.Component {
               <Card>
                 <CardHeader>
                   Your Address Book{' '}
-                  <i className="now-ui-icons business_badge" /></CardHeader>
+                  <i className="now-ui-icons business_badge"/></CardHeader>
                 <CardBody>
                   <div style={{overflow: 'scroll', maxHeight: 220}}>
                     <Table responsive>
                       <thead className="text-primary">
-                        <tr>
-                          <th>Name</th>
-                          <th>Address</th>
-                          <th />
-                        </tr>
+                      <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th/>
+                      </tr>
                       </thead>
                       <tbody>
-                        {this.state.accounts.map(account => {
-                          return (
-                            <tr key={account.address}>
-                              {<td>{account.name}</td>}
-                              {<td>{account.address}</td>}
-                              {
-                                <td>
-                                  <i
-                                    style={{cursor: 'pointer'}}
-                                    className="now-ui-icons ui-1_simple-remove"
-                                    onClick={() => {
-                                      AddressBook.removeAccount(account);
-                                      this.fetchAccounts();
-                                    }}
-                                  />{' '}
-                                </td>
-                              }
-                            </tr>
-                          );
-                        })}
+                      {this.state.accounts.map(account => {
+                        return (
+                          <tr key={account.address}>
+                            {<td>{account.name}</td>}
+                            {<td>{account.address}</td>}
+                            {
+                              <td>
+                                <i
+                                  style={{cursor: 'pointer'}}
+                                  className="now-ui-icons ui-1_simple-remove"
+                                  onClick={() => {
+                                    AddressBook.removeAccount(account);
+                                    this.fetchAccounts();
+                                  }}
+                                />{' '}
+                              </td>
+                            }
+                          </tr>
+                        );
+                      })}
                       </tbody>
                     </Table>
                   </div>
@@ -455,7 +421,8 @@ class FullScreenMap extends React.Component {
           </Row>
           <Row>
             <Col xs={12}>
-              <OpenRequests requests={this.state.requests} web3={this.state.web3}/>
+              <OpenRequests requests={this.state.requests} web3={this.state.web3}
+                            account={this.state.account} contract={this.state.contract}/>
             </Col>
           </Row>
           <Row>
