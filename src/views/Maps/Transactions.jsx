@@ -149,11 +149,16 @@ class Transactions extends React.Component {
                       {<td>{transaction.hash.substring(0, 10)}</td>}
                       {<td>{this.getDateTime(transaction.timeStamp)}</td>}
                       {<td>
-                        <i
-                          className={transaction.isError === '1'
-                            ? ("now-ui-icons ui-1_simple-remove")
-                            : ("now-ui-icons ui-1_check")}
-                        />{' '}
+                        {transaction.isError === '1'
+                          ? (<i
+                              className="now-ui-icons ui-1_simple-remove"
+                              style={{color: 'red'}}
+                            />
+                          ) : (<i
+                              className="now-ui-icons ui-1_check"
+                              style={{color: 'green'}}
+                            />
+                          )}{' '}
                       </td>}
                       {
                         <td>
