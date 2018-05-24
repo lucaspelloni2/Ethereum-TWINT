@@ -99,7 +99,7 @@ class OpenRequests extends React.Component {
   renderAction(request) {
     if (request.state === '1') {
       if(this.props.account.ethAddress === request.creditor) {
-        return(<td><Button color={'success'} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw Request</Button></td>
+        return(<td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw Request</Button></td>
         )
       } else {
         return (
@@ -108,11 +108,14 @@ class OpenRequests extends React.Component {
       }
     } else if (request.state === '2') {
       return (
-        <td><div>Withdrawm <i className="now-ui-icons business_bank"/></div></td>
+        <td><div><i className="now-ui-icons business_bank"/> Withdrawm</div></td>
       );
     } else {
       return (
-        <td>Paid</td>
+        <td><i className="now-ui-icons ui-1_check"
+               style={{color: '#092', fontSize: 20, fontWeight: 900}}/>
+          Paid
+        </td>
       );
     }
   }
