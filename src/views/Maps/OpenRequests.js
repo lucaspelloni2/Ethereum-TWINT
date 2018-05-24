@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, CardBody, CardHeader, Table} from "reactstrap";
+import {Button, Card, CardBody, CardHeader, Table} from "reactstrap";
 import AddressBook from "./AddressBook";
 
 
@@ -48,18 +48,74 @@ class OpenRequests extends React.Component {
     }
   }
 
-  renderAction(actionState) {
-    if (actionState === '1') {
+  /*
+  call with this.fulfillRequest(this.state.requests[1].reqId, this.state.requests[1].value);
+ */
+  fulfillRequest(reqId, valueInEth) {
+    this.props.contract.methods.fulfillRequest(reqId)
+      .send({
+        from: this.props.account.ethAddress,
+        value: this.props.web3.utils.toWei(valueInEth, 'ether')
+      })
+      .on('transactionHash', tx => {
+
+      })
+      .on('receipt', res => {
+        if (res.status) {
+          console.log('success');
+        } else {
+          console.log('fail');
+        }
+      })
+      .on('confirmation', function(confirmationNr) {
+
+      });
+  }
+
+  /*
+  call with this.withdrawRequest(this.state.requests[1].reqId);
+ */
+  withdrawRequest(reqId) {
+    this.props.contract.methods.withdrawRequest(reqId)
+      .send({
+        from: this.props.account.ethAddress
+      })
+      .on('transactionHash', tx => {
+
+      })
+      .on('receipt', res => {
+        if (res.status) {
+          console.log('success');
+        } else {
+          console.log('fail');
+        }
+      })
+      .on('confirmation', function(confirmationNr) {
+
+      });
+  }
+
+
+  renderAction(request) {
+    if (request.state === '1') {
+      if(this.props.account.ethAddress === request.creditor) {
+        return(<td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw Request</Button></td>
+        )
+      } else {
+        return (
+          <td><Button color={'primary'} onClick={() => (this.fulfillRequest(parseInt(request.reqId), request.value))}>Fullfill Request</Button></td>
+        )
+      }
+    } else if (request.state === '2') {
       return (
-        <td>Open</td>
-      )
-    } else if (actionState === '2') {
-      return (
-        <td>Withdrawm</td>
+        <td><div><i className="now-ui-icons business_bank"/> Withdrawm</div></td>
       );
     } else {
       return (
-        <td>Done</td>
+        <td><i className="now-ui-icons ui-1_check"
+               style={{color: '#092', fontSize: 20, fontWeight: 900}}/>
+          Paid
+        </td>
       );
     }
   }
@@ -85,15 +141,15 @@ class OpenRequests extends React.Component {
               </tr>
               </thead>
               <tbody>
-              {this.state.requests.map(request => {
+              {this.state.requests.map((request,i) => {
                 return (
                   // TODO add unique key
-                <tr> 
+                <tr key={i}>
                     {<td>{request.reqId}</td>}
                     {<td>{this.renderNameOrTxs(request.creditor)}</td>}
                     {<td>{this.renderNameOrTxs(request.debitor)}</td>}
                     {<td> {`${request.value} ETH`}</td>}
-                    {this.renderAction(request.state)}
+                    {this.renderAction(request)}
                   </tr>
                 )
               })}

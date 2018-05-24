@@ -88,17 +88,28 @@ class FullScreenMap extends React.Component {
       let address = addresses[0];
       let balance = await this.state.web3.eth.getBalance(address);
 
+
       let account = Object.assign({}, this.state.account);
       account.ethAddress = address;
       account.ethBalance = balance;
 
       let requests = await this.getAllRequests(address);
+      let filteredRequests = [];
+
+      let reqIdSet = new Set([]);
+      requests.map(request => {
+        if (!reqIdSet.has(request.reqId)) {
+          filteredRequests.push(request);
+          reqIdSet.add(request.reqId);
+        }
+      });
 
       this.setState({
         account: account,
         requests: requests
       });
     }
+
   }
 
   getUserAddresses() {
@@ -243,8 +254,10 @@ class FullScreenMap extends React.Component {
   }
 
   async getAllRequests(address) {
-    let req1 = await this.getRequestFrom(address);
-    let req2 = await this.getRequestFor(address);
+    let req1 = await
+      this.getRequestFrom(address);
+    let req2 = await
+      this.getRequestFor(address);
 
     return req1.concat(req2);
   }
@@ -419,7 +432,7 @@ class FullScreenMap extends React.Component {
             )
             : (
               <Col>
-                <Alert color="warning" >
+                <Alert color="warning">
                   <span data-notify="message">Please login to MetaMask. You can download MetaMask as a Google Chrome Extension.</span>
                 </Alert>
               </Col>
@@ -477,13 +490,13 @@ class FullScreenMap extends React.Component {
               </Card>
             </Col>
           </Row>
-
           {this.state.addresses > 0
             ? (
               <div>
-                < Row>
-                  < Col xs={12}>
-                    < OpenRequests requests={this.state.requests} web3={this.state.web3}/>
+                <Row>
+                  <Col xs={12}>
+                    <OpenRequests requests={this.state.requests} web3={this.state.web3}
+                                  account={this.state.account} contract={this.state.contract}/>
                   </Col>
                 </Row>
                 <Row>
