@@ -433,7 +433,7 @@ class FullScreenMap extends React.Component {
             : (
               <Col>
                 <Alert color="warning">
-                  <span data-notify="message">Please login to MetaMask. You can download MetaMask as a Google Chrome Extension.</span>
+                  <span data-notify="message">Please login to MetaMask. You can install MetaMask as a Google Chrome Extension.</span>
                 </Alert>
               </Col>
             )}
