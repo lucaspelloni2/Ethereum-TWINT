@@ -24,6 +24,7 @@ import Transactions from './Transactions';
 import NotificationAlert from 'react-notification-alert';
 import ContractProps from './ContractProps'
 import OpenRequests from "./OpenRequests";
+import {ClipLoader} from "react-spinners";
 
 let web3 = window.web3;
 
@@ -67,7 +68,8 @@ class FullScreenMap extends React.Component {
       requestAmount: '0.00',
       reason: '',
 
-      requests: []
+      requests: [],
+      requestMoneyPending: false,
     };
 
     this.toggle = this.toggle.bind(this);
@@ -141,6 +143,9 @@ class FullScreenMap extends React.Component {
   }
 
   requestMoney() {
+    this.setState({
+      requestMoneyPending: true
+    });
     this.state.contract.methods.requestMoneyFrom(
       this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
       this.state.selectedRequestAccount.value.address,
@@ -153,7 +158,9 @@ class FullScreenMap extends React.Component {
       })
       .on('receipt', res => {
         if (res.status) {
-          console.log('success');
+          this.setState({
+            requestMoneyPending: false
+          })
         } else {
           console.log('fail');
         }
@@ -413,6 +420,7 @@ class FullScreenMap extends React.Component {
                 <Card>
                   <CardHeader>Request money</CardHeader>
                   <CardBody>
+                    {}
                     <Label for={'req-amount'}>Amount (in ETH)</Label>
                     <Input
                       id="req-amount"
@@ -439,10 +447,12 @@ class FullScreenMap extends React.Component {
                       onChange={this.handleReasonChange.bind(this)}
                     />
                     <Button
+                      style={{float: 'left'}}
                       color={'primary'}
                       disabled={
                         this.state.requestAmount === '0.00' ||
-                        this.state.selectedRequestAccount === 'default'
+                        this.state.selectedRequestAccount === 'default' ||
+                        this.state.requestMoneyPending
                       }
                       onClick={() => {
                         this.requestMoney();
@@ -450,6 +460,14 @@ class FullScreenMap extends React.Component {
                     >
                       Request
                     </Button>
+                    {this.state.requestMoneyPending ? (
+                      <div style={{float: 'left', margin: 10}}>
+                        <ClipLoader
+                          size={35}
+                          color={'#cc6600'}
+                        />
+                      </div>
+                    ): null}
                   </CardBody>
                 </Card>
               </Col>

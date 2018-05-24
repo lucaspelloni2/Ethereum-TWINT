@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Card, CardBody, CardHeader, Table} from "reactstrap";
 import AddressBook from "./AddressBook";
+import '../../assets/css/demo.css'
 
 
 class OpenRequests extends React.Component {
@@ -142,7 +143,6 @@ class OpenRequests extends React.Component {
               <tbody>
               {this.state.requests.map((request,i) => {
                 return (
-                  // TODO add unique key
                 <tr key={i}>
                     {<td>{request.reqId}</td>}
                     {<td>{this.renderNameOrTxs(request.creditor)}</td>}
