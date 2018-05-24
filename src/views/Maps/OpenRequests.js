@@ -122,7 +122,6 @@ class OpenRequests extends React.Component {
 
 
   render() {
-    console.log(this.state.requests);
     return (
       <Card>
         <CardHeader> My Open Requests</CardHeader>

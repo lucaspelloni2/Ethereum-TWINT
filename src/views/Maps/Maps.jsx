@@ -94,22 +94,31 @@ class FullScreenMap extends React.Component {
       account.ethBalance = balance;
 
       let requests = await this.getAllRequests(address);
-      let filteredRequests = [];
+      let filteredRequests = this.filterRequests(requests);
 
-      let reqIdSet = new Set([]);
-      requests.map(request => {
-        if (!reqIdSet.has(request.reqId)) {
-          filteredRequests.push(request);
-          reqIdSet.add(request.reqId);
-        }
-      });
-
+      console.log(requests);
       this.setState({
         account: account,
-        requests: requests
+        requests: filteredRequests
       });
-    }
 
+      this.interval = setInterval(async () => {
+        balance = await this.state.web3.eth.getBalance(address);
+        account.ethBalance = balance;
+
+        requests = await this.getAllRequests(address);
+        filteredRequests = this.filterRequests(requests);
+
+        this.setState({
+          account: account,
+          requests: filteredRequests
+        });
+      }, 800);
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getUserAddresses() {
@@ -152,6 +161,21 @@ class FullScreenMap extends React.Component {
       .on('confirmation', function (confirmationNr) {
 
       });
+  }
+
+  /** filters the request by the reqId -> only one request per each reqId **/
+  filterRequests(requests) {
+    let filteredRequests = [];
+
+    let reqIdSet = new Set([]);
+    requests.map(request => {
+      if (!reqIdSet.has(request.reqId)) {
+        filteredRequests.push(request);
+        reqIdSet.add(request.reqId);
+      }
+    });
+
+    return filteredRequests;
   }
 
   /*
