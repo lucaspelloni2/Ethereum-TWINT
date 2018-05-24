@@ -10,7 +10,7 @@ import UserPage from 'views/UserPage/UserPage.jsx';
 var dashRoutes = [
     { path: "/dashboard", name: "Portfolio Overview", icon: "business_chart-pie-36", component: Dashboard },
     { path: "/icons", name: "Icons", icon: "design_image", component: Icons },
-    { path: "/web3", name: "Web3", icon: "business_money-coins", component: Maps },
+    { path: "/web3", name: "Twich", icon: "business_money-coins", component: Maps },
     { path: "/notifications", name: "Notifications", icon: "ui-1_bell-53", component: Notifications },
     { path: "/user-profile", name: "User Profile", icon: "users_single-02", component: UserPage },
     { path: "/extended-tables", name: "Table List", icon: "files_paper", component: TableList },

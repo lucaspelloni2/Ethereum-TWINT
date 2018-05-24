@@ -20,17 +20,17 @@ class OpenRequests extends React.Component {
     }
   }
 
-  renderNameOrTxs(txHash) {
-    let txHashShort = txHash.substring(0, 10);
+  renderNameOrTxs(address) {
+    let addrShort = address.substring(0, 10);
     const accounts = AddressBook.getAccounts();
 
-    let knownAccount = accounts.find(a => a.address === txHash);
+    let knownAccount = accounts.find(a => a.address.toLowerCase() === address.toLowerCase());
 
     if (knownAccount) {
       return (
         <div>
           <a
-            href={'https://etherscan.io/address/' + knownAccount.address}
+            href={'https://ropsten.etherscan.io/address/' + knownAccount.address}
             target="_blank"
           >
             {knownAccount.name}
@@ -41,8 +41,8 @@ class OpenRequests extends React.Component {
       return (
         <div>
           {' '}
-          <a href={'https://etherscan.io/address/' + txHash} target="_blank">
-            {txHashShort}..
+          <a href={'https://ropsten.etherscan.io/address/' + address} target="_blank">
+            {addrShort}..
           </a>
         </div>
       );
@@ -109,7 +109,7 @@ class OpenRequests extends React.Component {
       }
     } else if (request.state === '2') {
       return (
-        <td><div><i className="now-ui-icons business_bank"/> Withdrawm</div></td>
+        <td><div><i className="now-ui-icons business_bank"/> Withdrawn</div></td>
       );
     } else {
       return (
