@@ -94,22 +94,14 @@ class FullScreenMap extends React.Component {
       account.ethBalance = balance;
 
       let requests = await this.getAllRequests(address);
-      let filteredRequests = [];
+      let filteredRequests = this.filterRequests(requests);
 
-      let reqIdSet = new Set([]);
-      requests.map(request => {
-        if (!reqIdSet.has(request.reqId)) {
-          filteredRequests.push(request);
-          reqIdSet.add(request.reqId);
-        }
-      });
-
+      console.log(requests);
       this.setState({
         account: account,
-        requests: requests
+        requests: filteredRequests
       });
     }
-
   }
 
   getUserAddresses() {
@@ -152,6 +144,21 @@ class FullScreenMap extends React.Component {
       .on('confirmation', function (confirmationNr) {
 
       });
+  }
+
+  /** filters the request by the reqId -> only one request per each reqId **/
+  filterRequests(requests) {
+    let filteredRequests = [];
+
+    let reqIdSet = new Set([]);
+    requests.map(request => {
+      if (!reqIdSet.has(request.reqId)) {
+        filteredRequests.push(request);
+        reqIdSet.add(request.reqId);
+      }
+    });
+
+    return filteredRequests;
   }
 
   /*
