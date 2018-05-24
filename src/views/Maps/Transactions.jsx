@@ -92,12 +92,11 @@ class Transactions extends React.Component {
     ); // + ':' + seconds.substr(-2);
   }
 
-  renderNameOrTxs(transaction) {
-    let to = transaction.to;
-    let toShort = transaction.to.substring(0, 10);
+  renderNameOrTxs(address) {
+    let addrShort = address.substring(0, 10);
     const accounts = AddressBook.getAccounts();
 
-    let knownAccount = accounts.find(a => a.address === to);
+    let knownAccount = accounts.find(a => a.address.toLowerCase() === address.toLowerCase());
 
     if (knownAccount) {
       return (
@@ -114,8 +113,8 @@ class Transactions extends React.Component {
       return (
         <div>
           {' '}
-          <a href={'https://etherscan.io/address/' + to} target="_blank">
-            {toShort}..
+          <a href={'https://etherscan.io/address/' + address} target="_blank">
+            {addrShort}..
           </a>
         </div>
       );
@@ -160,20 +159,8 @@ class Transactions extends React.Component {
                             />
                           )}{' '}
                       </td>}
-                      {
-                        <td>
-                          <a
-                            href={
-                              'https://etherscan.io/address/' +
-                              transaction.from
-                            }
-                            target="_blank"
-                          >
-                            {transaction.from.substring(0, 10)}..
-                          </a>
-                        </td>
-                      }
-                      {<td>{this.renderNameOrTxs(transaction)}</td>}
+                      {<td>{this.renderNameOrTxs(transaction.from)}</td>}
+                      {<td>{this.renderNameOrTxs(transaction.to)}</td>}
                       {
                         <td>
                           {this.props.web3.utils.fromWei(
