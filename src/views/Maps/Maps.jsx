@@ -101,7 +101,24 @@ class FullScreenMap extends React.Component {
         account: account,
         requests: filteredRequests
       });
+
+      this.interval = setInterval(async () => {
+        balance = await this.state.web3.eth.getBalance(address);
+        account.ethBalance = balance;
+
+        requests = await this.getAllRequests(address);
+        filteredRequests = this.filterRequests(requests);
+
+        this.setState({
+          account: account,
+          requests: filteredRequests
+        });
+      }, 800);
     }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getUserAddresses() {
