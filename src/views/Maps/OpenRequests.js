@@ -57,8 +57,8 @@ class OpenRequests extends React.Component {
   fulfillRequest(reqId, valueInEth) {
     let pending = this.state.pendingRequests;
     this.setState({
-      pendingRequests: pending.add(reqId)
-    }
+        pendingRequests: pending.add(reqId)
+      }
     );
     this.props.contract.methods.fulfillRequest(reqId)
       .send({
@@ -79,7 +79,7 @@ class OpenRequests extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function(confirmationNr) {
+      .on('confirmation', function (confirmationNr) {
 
       });
   }
@@ -110,7 +110,7 @@ class OpenRequests extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function(confirmationNr) {
+      .on('confirmation', function (confirmationNr) {
 
       });
   }
@@ -118,9 +118,9 @@ class OpenRequests extends React.Component {
 
   renderAction(request) {
     let pending = this.state.pendingRequests;
-    if(pending.size > 0) {
+    if (pending.size > 0) {
       console.log(pending);
-      if(pending.has(parseInt(request.reqId))) {
+      if (pending.has(parseInt(request.reqId))) {
         return (
           <td>
             <ClipLoader
@@ -131,17 +131,22 @@ class OpenRequests extends React.Component {
       }
     }
     if (request.state === '1') {
-      if(this.props.account.ethAddress === request.creditor) {
-        return(<td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw Request</Button></td>
+      if (this.props.account.ethAddress === request.creditor) {
+        return (
+          <td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw
+            Request</Button></td>
         )
       } else {
         return (
-          <td><Button color={'primary'} onClick={() => (this.fulfillRequest(parseInt(request.reqId), request.value))}>Fullfill Request</Button></td>
+          <td><Button color={'primary'} onClick={() => (this.fulfillRequest(parseInt(request.reqId), request.value))}>Fullfill
+            Request</Button></td>
         )
       }
     } else if (request.state === '2') {
       return (
-        <td><div><i className="now-ui-icons business_bank"/> Withdrawn</div></td>
+        <td>
+          <div><i className="now-ui-icons business_bank"/> Withdrawn</div>
+        </td>
       );
     } else {
       return (
@@ -169,17 +174,19 @@ class OpenRequests extends React.Component {
                 <th>Creditor</th>
                 <th>Debitor</th>
                 <th>Value</th>
+                <th>Reason</th>
                 <th>Action</th>
               </tr>
               </thead>
               <tbody>
-              {this.state.requests.map((request,i) => {
+              {this.state.requests.map((request, i) => {
                 return (
-                <tr key={i}>
+                  <tr key={i}>
                     {<td>{request.reqId}</td>}
                     {<td>{this.renderNameOrTxs(request.creditor)}</td>}
                     {<td>{this.renderNameOrTxs(request.debitor)}</td>}
                     {<td> {`${request.value} ETH`}</td>}
+                    {<td>{request.reason}</td>}
                     {this.renderAction(request)}
                   </tr>
                 )

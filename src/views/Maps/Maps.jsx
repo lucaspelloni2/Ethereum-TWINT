@@ -149,7 +149,7 @@ class FullScreenMap extends React.Component {
     this.state.contract.methods.requestMoneyFrom(
       this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
       this.state.selectedRequestAccount.value.address,
-      this.state.web3.utils.asciiToHex('0x0')
+      this.state.web3.utils.fromAscii(this.state.reason)
     ).send({
       from: this.state.account.ethAddress
     })
