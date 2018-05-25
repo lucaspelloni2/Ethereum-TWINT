@@ -96,7 +96,7 @@ class FullScreenMap extends React.Component {
       account.ethBalance = balance;
 
       let requests = await this.getAllRequests(address);
-      let filteredRequests = this.filterRequests(requests);
+      let filteredRequests = this.filterAndSortRequests(requests);
 
       console.log(requests);
       this.setState({
@@ -109,7 +109,7 @@ class FullScreenMap extends React.Component {
         account.ethBalance = balance;
 
         requests = await this.getAllRequests(address);
-        filteredRequests = this.filterRequests(requests);
+        filteredRequests = this.filterAndSortRequests(requests);
 
         this.setState({
           account: account,
@@ -171,7 +171,7 @@ class FullScreenMap extends React.Component {
   }
 
   /** filters the request by the reqId -> only one request per each reqId **/
-  filterRequests(requests) {
+  filterAndSortRequests(requests) {
     let filteredRequests = [];
 
     let reqIdSet = new Set([]);
@@ -180,6 +180,14 @@ class FullScreenMap extends React.Component {
         filteredRequests.push(request);
         reqIdSet.add(request.reqId);
       }
+    });
+
+    filteredRequests.sort(function(a,b) {
+      return (parseInt(a.reqId) < parseInt(b.reqId))
+        ? 1
+        : ((parseInt(b.reqId) < parseInt(a.reqId))
+          ? -1
+          : 0);
     });
 
     return filteredRequests;
