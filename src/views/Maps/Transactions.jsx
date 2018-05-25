@@ -134,7 +134,7 @@ class Transactions extends React.Component {
                 <thead className="text-primary">
                 <tr>
                   <th>TxHash</th>
-                  <th>Age</th>
+                  <th>Date</th>
                   <th>Status</th>
                   <th>From</th>
                   <th>To</th>
