@@ -73,16 +73,17 @@ class OpenRequests extends React.Component {
  */
   fulfillRequest(reqId, valueInEth) {
     let pending = this.state.pendingRequests;
-    this.setState({
-      pendingRequests: pending.add(reqId)
-    });
     this.props.contract.methods
       .fulfillRequest(reqId)
       .send({
         from: this.props.account.ethAddress,
         value: this.props.web3.utils.toWei(valueInEth, 'ether')
       })
-      .on('transactionHash', tx => {})
+      .on('transactionHash', tx => {
+        this.setState({
+          pendingRequests: pending.add(reqId)
+        });
+      })
       .on('receipt', res => {
         if (res.status) {
           pending = this.state.pendingRequests;
@@ -102,15 +103,16 @@ class OpenRequests extends React.Component {
  */
   withdrawRequest(reqId) {
     let pending = this.state.pendingRequests;
-    this.setState({
-      pendingRequests: pending.add(reqId)
-    });
     this.props.contract.methods
       .withdrawRequest(reqId)
       .send({
         from: this.props.account.ethAddress
       })
-      .on('transactionHash', tx => {})
+      .on('transactionHash', tx => {
+        this.setState({
+          pendingRequests: pending.add(reqId)
+        });
+      })
       .on('receipt', res => {
         if (res.status) {
           pending = this.state.pendingRequests;
@@ -190,7 +192,7 @@ class OpenRequests extends React.Component {
         <CardHeader> My Requests</CardHeader>
         <CardBody>
           {this.state.requests.length <= 0 ? (
-            <div>You have no open requests</div>
+            <div>You have no requests.</div>
           ) : (
             <div style={{overflow: 'scroll', maxHeight: 220}}>
               <Table responsive>

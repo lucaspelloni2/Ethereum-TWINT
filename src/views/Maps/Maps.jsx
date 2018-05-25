@@ -145,29 +145,30 @@ class FullScreenMap extends React.Component {
   }
 
   requestMoney() {
-    this.setState({
-      requestMoneyPending: true
-    });
-    this.state.contract.methods
-      .requestMoneyFrom(
-        this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
-        this.state.selectedRequestAccount.value.address,
-        this.state.web3.utils.fromAscii(this.state.reason)
-      )
-      .send({
-        from: this.state.account.ethAddress
+    this.state.contract.methods.requestMoneyFrom(
+      this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
+      this.state.selectedRequestAccount.value.address,
+      this.state.web3.utils.fromAscii(this.state.reason)
+    ).send({
+      from: this.state.account.ethAddress
+    })
+      .on('transactionHash', tx => {
+        this.setState({
+          requestMoneyPending: true
+        });
       })
-      .on('transactionHash', tx => {})
       .on('receipt', res => {
         if (res.status) {
           this.setState({
             requestMoneyPending: false
           });
         } else {
-          console.log('fail');
+          console.log('failed transaction');
         }
       })
-      .on('confirmation', function(confirmationNr) {});
+      .on('confirmation', function (confirmationNr) {
+        // is called on the first 24 block confirmations
+      });
   }
 
   /** filters the request by the reqId -> only one request per each reqId **/
