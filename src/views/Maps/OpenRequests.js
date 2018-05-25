@@ -133,13 +133,11 @@ class OpenRequests extends React.Component {
     if (request.state === '1') {
       if (this.props.account.ethAddress === request.creditor) {
         return (
-          <td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw
-            Request</Button></td>
+          <td><Button style={{background: '#00aaff'}} onClick={() => (this.withdrawRequest(parseInt(request.reqId)))}>Withdraw</Button></td>
         )
       } else {
         return (
-          <td><Button color={'primary'} onClick={() => (this.fulfillRequest(parseInt(request.reqId), request.value))}>Fullfill
-            Request</Button></td>
+          <td><Button color={'primary'} onClick={() => (this.fulfillRequest(parseInt(request.reqId), request.value))}>Fulfill</Button></td>
         )
       }
     } else if (request.state === '2') {
@@ -162,7 +160,7 @@ class OpenRequests extends React.Component {
   render() {
     return (
       <Card>
-        <CardHeader> My Open Requests</CardHeader>
+        <CardHeader>My Requests</CardHeader>
         <CardBody>{this.state.requests.length <= 0 ? (
           <div>You have no open requests</div>
         ) : (
@@ -170,7 +168,6 @@ class OpenRequests extends React.Component {
             <Table responsive>
               <thead className="request-table-head">
               <tr>
-                <th>RequestId</th>
                 <th>Creditor</th>
                 <th>Debitor</th>
                 <th>Value</th>
@@ -182,7 +179,6 @@ class OpenRequests extends React.Component {
               {this.state.requests.map((request, i) => {
                 return (
                   <tr key={i}>
-                    {<td>{request.reqId}</td>}
                     {<td>{this.renderNameOrTxs(request.creditor)}</td>}
                     {<td>{this.renderNameOrTxs(request.debitor)}</td>}
                     {<td> {`${request.value} ETH`}</td>}
