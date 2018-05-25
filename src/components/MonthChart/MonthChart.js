@@ -10,9 +10,8 @@ import MonthChartArea from "./MonthChartArea";
 
 class MonthChart extends React.Component {
 
-  constructor(props) {
-    super(props);
-
+  constructor() {
+    super();
     this.state = {
       chartPrices: [],
       crypto: ''
