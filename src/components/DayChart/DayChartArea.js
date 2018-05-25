@@ -14,8 +14,52 @@ function hexToRGB(hex, alpha) {
 }
 
 class DayChartArea extends React.Component {
+
   constructor(props) {
     super(props);
+    this.state = {
+      colors: []
+    };
+  }
+
+  componentDidMount() {
+    let colors = [];
+
+    let chartPrices = Object.assign([], this.props.chartPrices);
+    console.log(this.props.chartPrices);
+
+    chartPrices.forEach(price => {
+      if (price > 0) {
+        colors.push("green");
+      }
+      else {
+        colors.push("red");
+      }
+    });
+    this.setState({colors: colors});
+
+
+
+    console.log(colors);
+  }
+
+
+  async componentWillReceiveProps(nextProps) {
+    let colors = ['red'];
+    if(nextProps.chartPrices !== this.state.chartPrices) {
+      let chartPrices = Object.assign([], nextProps.chartPrices);
+      console.log(nextProps);
+
+      chartPrices.forEach(price => {
+        if (price > 0) {
+          colors.push("green");
+        }
+        else {
+          colors.push("red");
+        }
+      });
+      this.setState({colors: colors});
+    }
   }
 
   // ##############################
@@ -31,9 +75,9 @@ class DayChartArea extends React.Component {
         labels: this.props.labels,
         datasets: [
           {
-            label: 'Active Countries',
-            backgroundColor: gradientFill,
-            borderColor: '#2CA8FF',
+            label: 'Performance',
+            backgroundColor: this.state.colors,
+            borderColor: this.state.colors,
             pointBorderColor: '#FFF',
             pointBackgroundColor: '#2CA8FF',
             pointBorderWidth: 2,
@@ -93,9 +137,9 @@ class DayChartArea extends React.Component {
   };
 
   render() {
-    return(
+    return (
       <div className="chart-area">
-        <Bar data={this.dashboard24HoursPerformanceChart.data} options={this.dashboard24HoursPerformanceChart.options} />
+        <Bar data={this.dashboard24HoursPerformanceChart.data} options={this.dashboard24HoursPerformanceChart.options}/>
       </div>
     )
   }
