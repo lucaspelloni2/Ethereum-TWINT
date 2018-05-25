@@ -161,7 +161,7 @@ class Header extends React.Component {
             <Nav navbar>
               <NavItem>
                 <div style={{cursor: 'pointer'}} className="nav-link">
-                  <HeaderNotification/>
+                  <HeaderNotification account={this.props.account} myRequests={this.props.myRequests}/>
                 </div>
               </NavItem>
 

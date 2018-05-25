@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import BellNotification from './BellNotification';
 
 const Icon = styled.i`
   position: relative;
@@ -33,19 +34,55 @@ const NotificationList = styled.div`
   border-radius: 8px;
   color: rgb(44, 44, 44);
   padding: 15px;
+  display: flex;
+  flex-direction: column;
 `;
 
 class HeaderNotification extends React.Component {
   constructor() {
     super();
+    this.state = {
+      showList: false
+    };
+  }
+
+  componentDidMount() {
+    const unviewedRequests = [];
+
+    this.props.myRequests.forEach(myRequest => {
+      const reqId = myRequest.reqId;
+    });
+
+  }
+
+  showNotifications() {
+    let show = this.state.showList;
+    this.setState({showList: !show});
   }
 
   render() {
     return (
       <div>
-        <Icon className="now-ui-icons ui-1_bell-53" />
+        <Icon
+          className="now-ui-icons ui-1_bell-53"
+          onClick={() => {
+            this.showNotifications();
+          }}
+        />
         <Notification />
-        <NotificationList>fskdjofsdoj</NotificationList>
+        {this.state.showList ? (
+          <NotificationList>
+            {this.props.myRequests.map(myRequest => {
+              return (
+                <BellNotification
+                  account={this.props.account}
+                  myRequest={myRequest}
+                  key={myRequest.reqId}
+                />
+              );
+            })}
+          </NotificationList>
+        ) : null}
       </div>
     );
   }

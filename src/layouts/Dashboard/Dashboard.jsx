@@ -11,6 +11,13 @@ import FullScreenMap from '../../views/Maps/Maps';
 var ps;
 
 class Dashboard extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      myRequests: null,
+        account: null
+    };
+  }
   componentDidMount() {
     if (navigator.platform.indexOf('Win') > -1) {
       ps = new PerfectScrollbar(this.refs.mainPanel);
@@ -29,12 +36,20 @@ class Dashboard extends React.Component {
       document.scrollingElement.scrollTop = 0;
     }
   }
+
+  updateRequests(myRequests) {
+    this.setState({myRequests: myRequests});
+  }
+
   render() {
     return (
       <div className="wrapper">
         <Sidebar {...this.props} routes={dashboardRoutes} />
         <div className="main-panel" ref="mainPanel">
-          <Header {...this.props} />
+          {this.state.myRequests ? (
+            <Header account={this.state.account} myRequests={this.state.myRequests} {...this.props}/>
+          ) : null}
+
           <Switch>
             {dashboardRoutes.map((prop, key) => {
               if (prop.collapse) {
@@ -56,7 +71,17 @@ class Dashboard extends React.Component {
                     path={prop.path}
                     exact
                     key={key}
-                    render={props => <FullScreenMap {...props} />}
+                    render={props => (
+                      <FullScreenMap
+                        updateMyRequests={async myRequests => {
+                          this.updateRequests(myRequests);
+                        }}
+                        updateAccount={async account => {
+                          this.setState({account: account})
+                        }}
+                        {...props}
+                      />
+                    )}
                   />
                 );
               } else {

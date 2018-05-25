@@ -97,12 +97,12 @@ class FullScreenMap extends React.Component {
 
       let requests = await this.getAllRequests(address);
       let filteredRequests = this.filterAndSortRequests(requests);
-
-      console.log(requests);
       this.setState({
         account: account,
         requests: filteredRequests
       });
+
+      this.props.updateAccount(account);
 
       this.interval = setInterval(async () => {
         balance = await this.state.web3.eth.getBalance(address);
@@ -116,7 +116,7 @@ class FullScreenMap extends React.Component {
           requests: filteredRequests
         });
 
-        //this.props.updateMyRequests(filteredRequests);
+        this.props.updateMyRequests(filteredRequests);
       }, 800);
     }
   }
