@@ -161,11 +161,11 @@ class FullScreenMap extends React.Component {
             requestMoneyPending: false
           })
         } else {
-          console.log('fail');
+          console.log('failed transaction');
         }
       })
       .on('confirmation', function (confirmationNr) {
-
+        // is called on the first 24 block confirmations
       });
   }
 
