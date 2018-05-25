@@ -22,9 +22,9 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import Transactions from './Transactions';
 import NotificationAlert from 'react-notification-alert';
-import ContractProps from './ContractProps'
-import OpenRequests from "./OpenRequests";
-import {ClipLoader} from "react-spinners";
+import ContractProps from './ContractProps';
+import OpenRequests from './OpenRequests';
+import {ClipLoader} from 'react-spinners';
 
 let web3 = window.web3;
 
@@ -36,7 +36,9 @@ class FullScreenMap extends React.Component {
       this.web3Provider = web3.currentProvider;
       web3Instance = new Web3(web3.currentProvider);
     } else {
-      this.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+      this.web3Provider = new Web3.providers.HttpProvider(
+        'http://localhost:7545'
+      );
       web3Instance = new Web3(this.web3Provider);
     }
 
@@ -69,7 +71,7 @@ class FullScreenMap extends React.Component {
       reason: '',
 
       requests: [],
-      requestMoneyPending: false,
+      requestMoneyPending: false
     };
 
     this.toggle = this.toggle.bind(this);
@@ -77,8 +79,7 @@ class FullScreenMap extends React.Component {
     this.notify = this.notify.bind(this);
   }
 
-  onDismiss() {
-  }
+  onDismiss() {}
 
   async componentDidMount() {
     let addresses = await this.getUserAddresses();
@@ -89,7 +90,6 @@ class FullScreenMap extends React.Component {
     if (addresses.length > 0) {
       let address = addresses[0];
       let balance = await this.state.web3.eth.getBalance(address);
-
 
       let account = Object.assign({}, this.state.account);
       account.ethAddress = address;
@@ -115,6 +115,8 @@ class FullScreenMap extends React.Component {
           account: account,
           requests: filteredRequests
         });
+
+        //this.props.updateMyRequests(filteredRequests);
       }, 800);
     }
   }
@@ -146,28 +148,26 @@ class FullScreenMap extends React.Component {
     this.setState({
       requestMoneyPending: true
     });
-    this.state.contract.methods.requestMoneyFrom(
-      this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
-      this.state.selectedRequestAccount.value.address,
-      this.state.web3.utils.fromAscii(this.state.reason)
-    ).send({
-      from: this.state.account.ethAddress
-    })
-      .on('transactionHash', tx => {
-
+    this.state.contract.methods
+      .requestMoneyFrom(
+        this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
+        this.state.selectedRequestAccount.value.address,
+        this.state.web3.utils.fromAscii(this.state.reason)
+      )
+      .send({
+        from: this.state.account.ethAddress
       })
+      .on('transactionHash', tx => {})
       .on('receipt', res => {
         if (res.status) {
           this.setState({
             requestMoneyPending: false
-          })
+          });
         } else {
           console.log('fail');
         }
       })
-      .on('confirmation', function (confirmationNr) {
-
-      });
+      .on('confirmation', function(confirmationNr) {});
   }
 
   /** filters the request by the reqId -> only one request per each reqId **/
@@ -182,12 +182,10 @@ class FullScreenMap extends React.Component {
       }
     });
 
-    filteredRequests.sort(function(a,b) {
-      return (parseInt(a.reqId) < parseInt(b.reqId))
+    filteredRequests.sort(function(a, b) {
+      return parseInt(a.reqId) < parseInt(b.reqId)
         ? 1
-        : ((parseInt(b.reqId) < parseInt(a.reqId))
-          ? -1
-          : 0);
+        : parseInt(b.reqId) < parseInt(a.reqId) ? -1 : 0;
     });
 
     return filteredRequests;
@@ -197,14 +195,13 @@ class FullScreenMap extends React.Component {
     call with this.fulfillRequest(this.state.requests[1].reqId, this.state.requests[1].value);
    */
   fulfillRequest(reqId, valueInEth) {
-    this.state.contract.methods.fulfillRequest(reqId)
+    this.state.contract.methods
+      .fulfillRequest(reqId)
       .send({
         from: this.state.account.ethAddress,
         value: this.state.web3.utils.toWei(valueInEth, 'ether')
       })
-      .on('transactionHash', tx => {
-
-      })
+      .on('transactionHash', tx => {})
       .on('receipt', res => {
         if (res.status) {
           console.log('success');
@@ -212,22 +209,19 @@ class FullScreenMap extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function (confirmationNr) {
-
-      });
+      .on('confirmation', function(confirmationNr) {});
   }
 
   /*
     call with this.withdrawRequest(this.state.requests[1].reqId);
    */
   withdrawRequest(reqId) {
-    this.state.contract.methods.withdrawRequest(reqId)
+    this.state.contract.methods
+      .withdrawRequest(reqId)
       .send({
         from: this.state.account.ethAddress
       })
-      .on('transactionHash', tx => {
-
-      })
+      .on('transactionHash', tx => {})
       .on('receipt', res => {
         if (res.status) {
           console.log('success');
@@ -235,9 +229,7 @@ class FullScreenMap extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function (confirmationNr) {
-
-      });
+      .on('confirmation', function(confirmationNr) {});
   }
 
   getRequestFrom(address) {
@@ -293,10 +285,8 @@ class FullScreenMap extends React.Component {
   }
 
   async getAllRequests(address) {
-    let req1 = await
-      this.getRequestFrom(address);
-    let req2 = await
-      this.getRequestFor(address);
+    let req1 = await this.getRequestFrom(address);
+    let req2 = await this.getRequestFor(address);
 
     return req1.concat(req2);
   }
@@ -382,11 +372,11 @@ class FullScreenMap extends React.Component {
   render() {
     return (
       <div>
-        <NotificationAlert ref="notificationAlert"/>
-        <PanelHeader size="sm"/>
+        <NotificationAlert ref="notificationAlert" />
+        <PanelHeader size="sm" />
         <div className="content">
-          <Row>{this.state.addresses > 0
-            ? (
+          <Row>
+            {this.state.addresses > 0 ? (
               <Col xs={6}>
                 <Card>
                   <CardHeader>Send money</CardHeader>
@@ -473,20 +463,19 @@ class FullScreenMap extends React.Component {
                     </Button>
                     {this.state.requestMoneyPending ? (
                       <div style={{float: 'left', margin: 10}}>
-                        <ClipLoader
-                          size={35}
-                          color={'#cc6600'}
-                        />
+                        <ClipLoader size={35} color={'#cc6600'} />
                       </div>
-                    ): null}
+                    ) : null}
                   </CardBody>
                 </Card>
               </Col>
-            )
-            : (
+            ) : (
               <Col>
                 <Alert color="warning">
-                  <span data-notify="message">Please login to MetaMask. You can install MetaMask as a Google Chrome Extension.</span>
+                  <span data-notify="message">
+                    Please login to MetaMask. You can install MetaMask as a
+                    Google Chrome Extension.
+                  </span>
                 </Alert>
               </Col>
             )}
@@ -494,38 +483,39 @@ class FullScreenMap extends React.Component {
               <Card>
                 <CardHeader>
                   Your Address Book{' '}
-                  <i className="now-ui-icons business_badge"/></CardHeader>
+                  <i className="now-ui-icons business_badge" />
+                </CardHeader>
                 <CardBody>
                   <div style={{overflow: 'scroll', maxHeight: 220}}>
                     <Table responsive>
                       <thead className="text-primary">
-                      <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th/>
-                      </tr>
+                        <tr>
+                          <th>Name</th>
+                          <th>Address</th>
+                          <th />
+                        </tr>
                       </thead>
                       <tbody>
-                      {this.state.accounts.map(account => {
-                        return (
-                          <tr key={account.address}>
-                            {<td>{account.name}</td>}
-                            {<td>{account.address}</td>}
-                            {
-                              <td>
-                                <i
-                                  style={{cursor: 'pointer'}}
-                                  className="now-ui-icons ui-1_simple-remove"
-                                  onClick={() => {
-                                    AddressBook.removeAccount(account);
-                                    this.fetchAccounts();
-                                  }}
-                                />{' '}
-                              </td>
-                            }
-                          </tr>
-                        );
-                      })}
+                        {this.state.accounts.map(account => {
+                          return (
+                            <tr key={account.address}>
+                              {<td>{account.name}</td>}
+                              {<td>{account.address}</td>}
+                              {
+                                <td>
+                                  <i
+                                    style={{cursor: 'pointer'}}
+                                    className="now-ui-icons ui-1_simple-remove"
+                                    onClick={() => {
+                                      AddressBook.removeAccount(account);
+                                      this.fetchAccounts();
+                                    }}
+                                  />{' '}
+                                </td>
+                              }
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </Table>
                   </div>
@@ -543,28 +533,30 @@ class FullScreenMap extends React.Component {
               </Card>
             </Col>
           </Row>
-          {this.state.addresses > 0
-            ? (
-              <div>
-                <Row>
-                  <Col xs={12}>
-                    <OpenRequests requests={this.state.requests} web3={this.state.web3}
-                                  account={this.state.account} contract={this.state.contract}/>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={12}>
-                    {this.state.account.ethAddress !== null ? (
-                      <Transactions
-                        web3={this.state.web3}
-                        account={this.state.account}
-                      />
-                    ) : null}
-                  </Col>
-                </Row>
-              </div>
-            )
-            : null}
+          {this.state.addresses > 0 ? (
+            <div>
+              <Row>
+                <Col xs={12}>
+                  <OpenRequests
+                    requests={this.state.requests}
+                    web3={this.state.web3}
+                    account={this.state.account}
+                    contract={this.state.contract}
+                  />
+                </Col>
+              </Row>
+              <Row>
+                <Col xs={12}>
+                  {this.state.account.ethAddress !== null ? (
+                    <Transactions
+                      web3={this.state.web3}
+                      account={this.state.account}
+                    />
+                  ) : null}
+                </Col>
+              </Row>
+            </div>
+          ) : null}
         </div>
 
         <Modal
