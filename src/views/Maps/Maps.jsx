@@ -375,6 +375,62 @@ class FullScreenMap extends React.Component {
     this.refs.notificationAlert.notificationAlert(options);
   }
 
+  renderAddressBook() {
+    return (
+      <Card>
+        <CardHeader>
+          Your Address Book{' '}
+          <i className="now-ui-icons business_badge"/>
+        </CardHeader>
+        <CardBody>
+          <div style={{overflow: 'scroll', maxHeight: 220}}>
+            <Table responsive>
+              <thead className="text-primary">
+              <tr>
+                <th>Name</th>
+                <th>Address</th>
+                <th/>
+              </tr>
+              </thead>
+              <tbody>
+              {this.state.accounts.map(account => {
+                return (
+                  <tr key={account.address}>
+                    {<td>{account.name}</td>}
+                    {<td>{account.address.substring(0, 30)}..</td>}
+                    {
+                      <td>
+                        <i
+                          style={{cursor: 'pointer'}}
+                          className="now-ui-icons ui-1_simple-remove"
+                          onClick={() => {
+                            AddressBook.removeAccount(account);
+                            this.fetchAccounts();
+                          }}
+                        />{' '}
+                      </td>
+                    }
+                  </tr>
+                );
+              })}
+              </tbody>
+            </Table>
+          </div>
+          <div style={{marginTop: 20}}>
+            <Button
+              color={'primary'}
+              onClick={() => {
+                this.toggle();
+              }}
+            >
+              Add a new address
+            </Button>
+          </div>
+        </CardBody>
+      </Card>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -498,69 +554,27 @@ class FullScreenMap extends React.Component {
               </Col>
             </Row>
           ) : null}
-          <Row>
-            <Col xs={5}>
-              <Card>
-                <CardHeader>
-                  Your Address Book{' '}
-                  <i className="now-ui-icons business_badge"/>
-                </CardHeader>
-                <CardBody>
-                  <div style={{overflow: 'scroll', maxHeight: 220}}>
-                    <Table responsive>
-                      <thead className="text-primary">
-                      <tr>
-                        <th>Name</th>
-                        <th>Address</th>
-                        <th/>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      {this.state.accounts.map(account => {
-                        return (
-                          <tr key={account.address}>
-                            {<td>{account.name}</td>}
-                            {<td>{account.address.substring(0,30)}..</td>}
-                            {
-                              <td>
-                                <i
-                                  style={{cursor: 'pointer'}}
-                                  className="now-ui-icons ui-1_simple-remove"
-                                  onClick={() => {
-                                    AddressBook.removeAccount(account);
-                                    this.fetchAccounts();
-                                  }}
-                                />{' '}
-                              </td>
-                            }
-                          </tr>
-                        );
-                      })}
-                      </tbody>
-                    </Table>
-                  </div>
-                  <div style={{marginTop: 20}}>
-                    <Button
-                      color={'primary'}
-                      onClick={() => {
-                        this.toggle();
-                      }}
-                    >
-                      Add a new address
-                    </Button>
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-            {this.state.addresses > 0 ? (
-              <Col xs={7}>
-                <Transactions
-                  web3={this.state.web3}
-                  account={this.state.account}
-                />
-              </Col>
-            ) : null}
-          </Row>
+          {this.state.addresses > 0
+            ? (
+              <Row>
+                <Col xs={5}>
+                  {this.renderAddressBook()}
+                </Col>
+                <Col xs={7}>
+                  <Transactions
+                    web3={this.state.web3}
+                    account={this.state.account}
+                  />
+                </Col>
+              </Row>
+            )
+            : (
+              <Row>
+                <Col xs={12}>
+                  {this.renderAddressBook()}
+                </Col>
+              </Row>
+            )}
         </div>
 
         <Modal
