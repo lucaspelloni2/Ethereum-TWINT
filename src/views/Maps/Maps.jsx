@@ -71,7 +71,8 @@ class FullScreenMap extends React.Component {
       reason: '',
 
       requests: [],
-      requestMoneyPending: false
+      requestMoneyPending: false,
+      sendMoneyPending: false
     };
 
     this.toggle = this.toggle.bind(this);
@@ -142,7 +143,22 @@ class FullScreenMap extends React.Component {
       from: this.state.account.ethAddress,
       to: this.state.selectedAccount.value.address,
       value: this.state.web3.utils.toWei(this.state.amount, 'ether')
-    });
+    }).on('transactionHash', tx => {
+      this.setState({
+        sendMoneyPending: true
+      });
+    })
+      .on('receipt', res => {
+        this.setState({
+          sendMoneyPending: false
+        });
+        if (!res.status) {
+          console.log('failed transaction');
+        }
+      })
+      .on('confirmation', function (confirmationNr) {
+        // is called on the first 24 block confirmations
+      });
   }
 
   requestMoney() {
@@ -464,6 +480,7 @@ class FullScreenMap extends React.Component {
                       }))}
                     />
                     <Button
+                      style={{float: 'left'}}
                       color={'primary'}
                       disabled={
                         this.state.amount === '0.00' ||
@@ -475,6 +492,11 @@ class FullScreenMap extends React.Component {
                     >
                       Send
                     </Button>
+                    {this.state.sendMoneyPending ? (
+                      <div style={{float: 'left', margin: 10}}>
+                        <ClipLoader size={35} color={'#cc6600'}/>
+                      </div>
+                    ) : null}
                   </CardBody>
                 </Card>
               </Col>
