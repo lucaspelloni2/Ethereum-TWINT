@@ -52,10 +52,10 @@ class DayChartArea extends React.Component {
 
       chartPrices.forEach(price => {
         if (price > 0) {
-          colors.push("green");
+          colors.push("#18ce0f");
         }
         else {
-          colors.push("red");
+          colors.push('#f96332');
         }
       });
       this.setState({colors: colors});
