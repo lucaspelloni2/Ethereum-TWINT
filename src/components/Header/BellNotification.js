@@ -1,10 +1,17 @@
 import React from 'react';
 import styled from 'styled-components';
+import AddressBook from '../../views/Maps/AddressBook';
 
 const NotifContainer = styled.div`
+  &:hover {
+    background: #f2f2f2;
+  }
   display: flex;
   align-items: center;
-  height: 80px;
+  min-height: 80px;
+  width: 100%;
+  padding: 12px;
+  border-bottom: 1px solid #f2f2f2;
 `;
 
 const BellIconContainer = styled.div`
@@ -18,7 +25,8 @@ const BellIcon = styled.i`
 const State = styled.div`
   padding: 5px;
   border-radius: 4px;
-  background: linear-gradient(90deg, #03a7f7, #1869d0 51%);
+  background: ${props =>
+    `linear-gradient(90deg, ${props.first}, ${props.second} 51%)`};
   color: white;
   text-align: center;
   margin-top: 5px;
@@ -27,6 +35,7 @@ const State = styled.div`
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 `;
 
 const Text = styled.div`
@@ -34,9 +43,45 @@ const Text = styled.div`
   text-transform: lowercase;
 `;
 
+const AddressLink = styled.a``;
+
 class BellNotification extends React.Component {
   constructor() {
     super();
+  }
+
+  renderName(address) {
+    let isKnown = false;
+    let accounts = AddressBook.getAccounts();
+    let kAccount = '';
+    accounts.forEach(knownAccount => {
+      if (knownAccount.address === address) {
+        kAccount = knownAccount;
+        isKnown = true;
+      }
+    });
+
+    if (isKnown) {
+      return (
+        <AddressLink
+          href={'https://ropsten.etherscan.io/address/' + kAccount.address}
+          style={{color: '#f96332'}}
+          target="_blank"
+        >
+          {kAccount.name}
+        </AddressLink>
+      );
+    } else {
+      return (
+        <AddressLink
+          href={'https://ropsten.etherscan.io/address/' + address}
+          style={{color: '#f96332'}}
+          target="_blank"
+        >
+          Someone
+        </AddressLink>
+      );
+    }
   }
 
   renderMessage() {
@@ -58,8 +103,13 @@ class BellNotification extends React.Component {
             />
           </BellIconContainer>
           <TextContainer>
-            <Text>Someone requested money from you</Text>
-            <State>MONEY REQUESTED</State>
+            <Text>
+              {this.renderName(request.creditor)} requested {request.value}{' '}
+              <p style={{textTransform: 'uppercase'}}>ETH</p> from you
+            </Text>
+            <State first={'#03a7f7'} second={'#1869d0'}>
+              MONEY REQUESTED
+            </State>
           </TextContainer>
         </NotifContainer>
       );
@@ -75,8 +125,14 @@ class BellNotification extends React.Component {
               className="now-ui-icons ui-1_bell-53"
             />
           </BellIconContainer>
-          <Text>Someone has removed the money request</Text>
-          <State>MONEY REQUESTED</State>
+          <TextContainer>
+            <Text>
+              {this.renderName(request.creditor)} has removed the money request
+            </Text>
+            <State first={'#03f7b5'} second={'#1869d0'}>
+              REQUEST REMOVED
+            </State>
+          </TextContainer>
         </NotifContainer>
       );
     } else if (
@@ -91,7 +147,15 @@ class BellNotification extends React.Component {
               className="now-ui-icons ui-1_bell-53"
             />
           </BellIconContainer>
-          <p>Someone has fulfill your request</p>
+          <TextContainer>
+            <Text>
+              {this.renderName(request.debitor)} has paid your request of{' '}
+              {request.value} <p style={{textTransform: 'uppercase'}}>ETH</p>
+            </Text>
+            <State first={'#03b2f7'} second={'#47d888'}>
+              REQUEST FULFILLED
+            </State>
+          </TextContainer>
         </NotifContainer>
       );
     }

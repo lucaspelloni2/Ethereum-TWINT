@@ -36,6 +36,9 @@ const NotificationList = styled.div`
   padding: 15px;
   display: flex;
   flex-direction: column;
+  max-height: 270px;
+  overflow: scroll;
+  cursor: default;
 `;
 
 class HeaderNotification extends React.Component {
