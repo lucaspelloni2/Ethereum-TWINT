@@ -79,7 +79,8 @@ class FullScreenMap extends React.Component {
     this.notify = this.notify.bind(this);
   }
 
-  onDismiss() {}
+  onDismiss() {
+  }
 
   async componentDidMount() {
     let addresses = await this.getUserAddresses();
@@ -183,7 +184,7 @@ class FullScreenMap extends React.Component {
       }
     });
 
-    filteredRequests.sort(function(a, b) {
+    filteredRequests.sort(function (a, b) {
       return parseInt(a.reqId) < parseInt(b.reqId)
         ? 1
         : parseInt(b.reqId) < parseInt(a.reqId) ? -1 : 0;
@@ -202,7 +203,8 @@ class FullScreenMap extends React.Component {
         from: this.state.account.ethAddress,
         value: this.state.web3.utils.toWei(valueInEth, 'ether')
       })
-      .on('transactionHash', tx => {})
+      .on('transactionHash', tx => {
+      })
       .on('receipt', res => {
         if (res.status) {
           console.log('success');
@@ -210,7 +212,8 @@ class FullScreenMap extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function(confirmationNr) {});
+      .on('confirmation', function (confirmationNr) {
+      });
   }
 
   /*
@@ -222,7 +225,8 @@ class FullScreenMap extends React.Component {
       .send({
         from: this.state.account.ethAddress
       })
-      .on('transactionHash', tx => {})
+      .on('transactionHash', tx => {
+      })
       .on('receipt', res => {
         if (res.status) {
           console.log('success');
@@ -230,7 +234,8 @@ class FullScreenMap extends React.Component {
           console.log('fail');
         }
       })
-      .on('confirmation', function(confirmationNr) {});
+      .on('confirmation', function (confirmationNr) {
+      });
   }
 
   getRequestFrom(address) {
@@ -373,11 +378,11 @@ class FullScreenMap extends React.Component {
   render() {
     return (
       <div>
-        <NotificationAlert ref="notificationAlert" />
-        <PanelHeader size="sm" />
+        <NotificationAlert ref="notificationAlert"/>
+        <PanelHeader size="sm"/>
         <div className="content">
-          <Row>
-            {this.state.addresses > 0 ? (
+          {this.state.addresses > 0 ? (
+            <Row>
               <Col xs={6}>
                 <Card>
                   <CardHeader>Send money</CardHeader>
@@ -416,6 +421,8 @@ class FullScreenMap extends React.Component {
                     </Button>
                   </CardBody>
                 </Card>
+              </Col>
+              <Col xs={6}>
                 <Card>
                   <CardHeader>Request money</CardHeader>
                   <CardBody>
@@ -464,59 +471,71 @@ class FullScreenMap extends React.Component {
                     </Button>
                     {this.state.requestMoneyPending ? (
                       <div style={{float: 'left', margin: 10}}>
-                        <ClipLoader size={35} color={'#cc6600'} />
+                        <ClipLoader size={35} color={'#cc6600'}/>
                       </div>
                     ) : null}
                   </CardBody>
                 </Card>
               </Col>
-            ) : (
-              <Col>
-                <Alert color="warning">
+            </Row>
+          ) : (
+            <Alert color="warning">
                   <span data-notify="message">
                     Please login to MetaMask. You can install MetaMask as a
                     Google Chrome Extension.
                   </span>
-                </Alert>
+            </Alert>
+          )}
+          {this.state.addresses > 0 ? (
+            <Row>
+              <Col xs={12}>
+                <OpenRequests
+                  requests={this.state.requests}
+                  web3={this.state.web3}
+                  account={this.state.account}
+                  contract={this.state.contract}
+                />
               </Col>
-            )}
-            <Col xs={6}>
+            </Row>
+          ) : null}
+          <Row>
+            <Col xs={5}>
               <Card>
                 <CardHeader>
                   Your Address Book{' '}
-                  <i className="now-ui-icons business_badge" />
+                  <i className="now-ui-icons business_badge"/>
                 </CardHeader>
                 <CardBody>
                   <div style={{overflow: 'scroll', maxHeight: 220}}>
                     <Table responsive>
                       <thead className="text-primary">
-                        <tr>
-                          <th>Name</th>
-                          <th>Address</th>
-                          <th />
-                        </tr>
+                      <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th/>
+                      </tr>
                       </thead>
                       <tbody>
-                        {this.state.accounts.map(account => {
-                          return (
-                            <tr key={account.address}>
-                              {<td>{account.name}</td>}
-                              {<td>{account.address}</td>}
-                              {
-                                <td>
-                                  <i
-                                    style={{cursor: 'pointer'}}
-                                    className="now-ui-icons ui-1_simple-remove"
-                                    onClick={() => {
-                                      AddressBook.removeAccount(account);
-                                      this.fetchAccounts();
-                                    }}
-                                  />{' '}
-                                </td>
-                              }
-                            </tr>
-                          );
-                        })}
+                      {this.state.accounts.map(account => {
+                        return (
+                          <tr key={account.address}>
+                            {<td>{account.name}</td>}
+                            {<td>{account.address.substring(0,30)}..</td>}
+                            {
+                              <td>
+                                <i
+                                  style={{cursor: 'pointer'}}
+                                  className="now-ui-icons ui-1_simple-remove"
+                                  onClick={() => {
+                                    AddressBook.removeAccount(account);
+                                    this.fetchAccounts();
+                                  }}
+                                />{' '}
+                              </td>
+                            }
+                          </tr>
+                        );
+                      })}
                       </tbody>
                     </Table>
                   </div>
@@ -533,31 +552,15 @@ class FullScreenMap extends React.Component {
                 </CardBody>
               </Card>
             </Col>
+            {this.state.addresses > 0 ? (
+              <Col xs={7}>
+                <Transactions
+                  web3={this.state.web3}
+                  account={this.state.account}
+                />
+              </Col>
+            ) : null}
           </Row>
-          {this.state.addresses > 0 ? (
-            <div>
-              <Row>
-                <Col xs={12}>
-                  <OpenRequests
-                    requests={this.state.requests}
-                    web3={this.state.web3}
-                    account={this.state.account}
-                    contract={this.state.contract}
-                  />
-                </Col>
-              </Row>
-              <Row>
-                <Col xs={12}>
-                  {this.state.account.ethAddress !== null ? (
-                    <Transactions
-                      web3={this.state.web3}
-                      account={this.state.account}
-                    />
-                  ) : null}
-                </Col>
-              </Row>
-            </div>
-          ) : null}
         </div>
 
         <Modal
