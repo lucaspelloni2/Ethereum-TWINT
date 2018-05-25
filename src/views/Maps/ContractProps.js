@@ -214,7 +214,7 @@ const ContractProps = {
       "type": "function"
     }
   ],
-  CONTRACT_ADDRESS: '0x3e75d99dc7b3857caabc9f98ca3bd715f758c4ff'
+  CONTRACT_ADDRESS: '0xb45aff6677f3f2ca6dd50507089cd4d4485c553d'
 };
 
 export default ContractProps;

@@ -42,7 +42,7 @@ contract Twich {
         require(requests[reqId].value == msg.value, 'not the right amount of money');
         require(requests[reqId].state == RequestState.REQUESTED, 'not able to fulfill the request');
 
-        (requests[reqId].debitor).transfer(msg.value);
+        (requests[reqId].creditor).transfer(msg.value);
         requests[reqId].state = RequestState.FULFILLED;
     }
 
