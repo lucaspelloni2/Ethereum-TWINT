@@ -143,9 +143,6 @@ class FullScreenMap extends React.Component {
   }
 
   requestMoney() {
-    this.setState({
-      requestMoneyPending: true
-    });
     this.state.contract.methods.requestMoneyFrom(
       this.state.web3.utils.toWei(this.state.requestAmount, 'ether'),
       this.state.selectedRequestAccount.value.address,
@@ -154,7 +151,9 @@ class FullScreenMap extends React.Component {
       from: this.state.account.ethAddress
     })
       .on('transactionHash', tx => {
-
+        this.setState({
+          requestMoneyPending: true
+        });
       })
       .on('receipt', res => {
         if (res.status) {
