@@ -190,7 +190,7 @@ class OpenRequests extends React.Component {
         <CardHeader> My Requests</CardHeader>
         <CardBody>
           {this.state.requests.length <= 0 ? (
-            <div>You have no open requests</div>
+            <div>You have no requests.</div>
           ) : (
             <div style={{overflow: 'scroll', maxHeight: 220}}>
               <Table responsive>
