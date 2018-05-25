@@ -93,19 +93,30 @@ class Transactions extends React.Component {
     ); // + ':' + seconds.substr(-2);
   }
 
-  renderNameOrTxs(address) {
+  renderNameOrTxs(address, input) {
     let addrShort = address.substring(0, 10);
     const accounts = AddressBook.getAccounts();
 
-    if (address.toLowerCase() === ContractProps.CONTRACT_ADDRESS.toLowerCase())
+    if (address.toLowerCase() === ContractProps.CONTRACT_ADDRESS.toLowerCase()) {
+      let title = '';
+      if (input.substring(2, 10).toLowerCase() === ContractProps.REQUEST)
+        title = 'Twich Request';
+      else if (input.substring(2, 10).toLowerCase() === ContractProps.WITHDRAW)
+        title = 'Twich Withdraw';
+      else
+        title = 'Twich Fulfill';
+
       return (
         <div>
-          {' '}
-          <a href={'https://ropsten.etherscan.io/address/' + address} target="_blank">
-            Twich Contract
+          <a
+            href={'https://ropsten.etherscan.io/address/' + ContractProps.CONTRACT_ADDRESS}
+            target="_blank"
+          >
+            {title}
           </a>
         </div>
       );
+    }
 
     let knownAccount = accounts.find(a => a.address.toLowerCase() === address.toLowerCase());
 
@@ -175,8 +186,8 @@ class Transactions extends React.Component {
                             />
                           )}{' '}
                       </td>}
-                      {<td>{this.renderNameOrTxs(transaction.from)}</td>}
-                      {<td>{this.renderNameOrTxs(transaction.to)}</td>}
+                      {<td>{this.renderNameOrTxs(transaction.from, transaction.input)}</td>}
+                      {<td>{this.renderNameOrTxs(transaction.to, transaction.input)}</td>}
                       {
                         <td>
                           {this.props.web3.utils.fromWei(

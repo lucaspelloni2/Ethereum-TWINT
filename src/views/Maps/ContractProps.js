@@ -214,7 +214,24 @@ const ContractProps = {
       "type": "function"
     }
   ],
-  CONTRACT_ADDRESS: '0xb45aff6677f3f2ca6dd50507089cd4d4485c553d'
+  CONTRACT_ADDRESS: '0xb45aff6677f3f2ca6dd50507089cd4d4485c553d',
+
+  /*
+    {
+      "67785a00": "creditorReq(address,uint256)",
+      "8dc90070": "debitorReq(address,uint256)",
+      "9a91eb0d": "fulfillRequest(uint256)",
+      "dbda67a2": "getRequestsByCreditor(address)",
+      "350d25ae": "getRequestsByDebitor(address)",
+      "8993f7ea": "requestMoneyFrom(uint256,address,bytes32)",
+      "81d12c58": "requests(uint256)",
+      "74899a7e": "withdrawRequest(uint256)"
+    }
+   */
+  REQUEST: '8993f7ea',
+  FULFILL: '9a91eb0d',
+  WITHDRAW: '74899a7e'
+
 };
 
 export default ContractProps;
