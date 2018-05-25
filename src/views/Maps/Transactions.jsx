@@ -15,6 +15,7 @@ import Web3 from 'web3';
 import AddressBook from './AddressBook';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import ContractProps from "./ContractProps";
 
 class Transactions extends React.Component {
   constructor() {
@@ -95,6 +96,16 @@ class Transactions extends React.Component {
   renderNameOrTxs(address) {
     let addrShort = address.substring(0, 10);
     const accounts = AddressBook.getAccounts();
+
+    if (address.toLowerCase() === ContractProps.CONTRACT_ADDRESS.toLowerCase())
+      return (
+        <div>
+          {' '}
+          <a href={'https://ropsten.etherscan.io/address/' + address} target="_blank">
+            Twich Contract
+          </a>
+        </div>
+      );
 
     let knownAccount = accounts.find(a => a.address.toLowerCase() === address.toLowerCase());
 
