@@ -44,20 +44,29 @@ class HeaderNotification extends React.Component {
     this.state = {
       showList: false
     };
+
+    if (!localStorage.getItem('viewed')) {
+      localStorage.setItem('viewed', JSON.stringify([]));
+    }
   }
 
   componentDidMount() {
     const unviewedRequests = [];
-
-    this.props.myRequests.forEach(myRequest => {
-      const reqId = myRequest.reqId;
-    });
-
   }
 
   showNotifications() {
     let show = this.state.showList;
     this.setState({showList: !show});
+
+    if (!show) {
+      // is visibile --> trick
+      let viewedNotif = [];
+      this.props.myRequests.forEach(myRequest => {
+        const reqId = myRequest.reqId;
+        viewedNotif.push(reqId);
+      });
+      localStorage.setItem('viewed', JSON.stringify(viewedNotif));
+    }
   }
 
   render() {
@@ -69,7 +78,11 @@ class HeaderNotification extends React.Component {
             this.showNotifications();
           }}
         />
-        <Notification />
+        {JSON.parse(localStorage.getItem('viewed')).length !==
+        this.props.myRequests.length ? (
+          <Notification />
+        ) : null}
+
         {this.state.showList ? (
           <NotificationList>
             {this.props.myRequests.map(myRequest => {

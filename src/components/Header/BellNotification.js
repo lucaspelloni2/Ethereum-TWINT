@@ -75,8 +75,8 @@ class BellNotification extends React.Component {
               className="now-ui-icons ui-1_bell-53"
             />
           </BellIconContainer>
-          <State />
-          <p>Someone has removed the money request</p>
+          <Text>Someone has removed the money request</Text>
+          <State>MONEY REQUESTED</State>
         </NotifContainer>
       );
     } else if (
