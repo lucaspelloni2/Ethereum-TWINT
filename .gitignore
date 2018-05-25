@@ -22,3 +22,4 @@ yarn-error.log*
 .idea/
 Documentation/tutorial-components.html
 LICENSE.md
+package-lock.json
