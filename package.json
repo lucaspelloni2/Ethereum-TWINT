@@ -1,9 +1,8 @@
 {
-  "homepage": "http://lucaspelloni2.github.io/crypto-portfolio",
+  "homepage": "https://www.sendtoken.app",
   "name": "nud-react",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://sendtoken.app",
   "dependencies": {
     "bootstrap": "4.0.0-beta",
     "chart.js": "2.7.1",
