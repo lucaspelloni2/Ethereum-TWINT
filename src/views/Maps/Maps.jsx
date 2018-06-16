@@ -119,7 +119,7 @@ class FullScreenMap extends React.Component {
         });
 
         this.props.updateMyRequests(filteredRequests);
-      }, 800);
+      }, 3000);
     }
   }
 
